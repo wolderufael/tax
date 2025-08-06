@@ -95,6 +95,8 @@ export default function ReceiptGeneratorPage() {
       totalAmount,
       customerName,
       ercaClb,
+      orderNo: "1234567890",
+      receiptNo: "1234567890",
     }
 
     setGeneratedReceipt(receiptData)

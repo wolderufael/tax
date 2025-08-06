@@ -30,8 +30,8 @@ import Image from "next/image"
 
 const mainItems = [
   { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Business Users", url: "/dashboard/business", icon: Briefcase },
-  { title: "Taxpayer Users", url: "/dashboard/taxPayer", icon: Users },
+  { title: "Manage Tax Officers", url: "/dashboard/business", icon: Briefcase },
+  { title: "Manage Tax Payers", url: "/dashboard/taxPayer", icon: Users },
   { title: "Certificate Management", url: "/dashboard/certificates", icon: Receipt },
   { title: "Revenue", url: "/dashboard/revenue", icon: BarChart3 }, // Placeholder
 ]

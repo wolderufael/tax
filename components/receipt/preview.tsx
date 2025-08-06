@@ -1,25 +1,37 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { ReceiptData } from "@/lib/mock-data"
-import { Printer } from "lucide-react"
-
+import { Button } from "@/components/ui/button";
+import { ReceiptData } from "@/lib/mock-data";
+import { Printer } from "lucide-react";
 
 interface ReceiptPreviewProps {
-  receipt: ReceiptData
+  receipt: ReceiptData;
 }
 
 export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
   const handlePrint = () => {
-    window.print()
-  }
+    window.print();
+  };
+  const qrData = JSON.stringify({
+    license: receipt.tin,
+    owner: receipt.customerName,
+    business: receipt.businessName,
+    issued: receipt.date,
+    authority: "South Ethiopia Trade Bureau",
+    registration: receipt.invoiceReference,
+  });
 
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
+    qrData
+  )}`;
   return (
     <div className="w-[300px] mx-auto bg-white p-4 shadow-lg font-mono  font-stretch-95%  text-xs leading-tight print:shadow-none print:border-none print:w-[280px] print:p-2">
       {/* Header */}
       <div className="text-center mb-4">
         <p className="text-sm  mb-1">TIN: {receipt.tin}</p>
-        <p className="text-sm font-bold mb-1">{receipt.customerName || receipt.businessName}</p>
+        <p className="text-sm font-bold mb-1">
+          {receipt.customerName || receipt.businessName}
+        </p>
         <p className="mb-1">{receipt.businessName}</p>
         <p className="mb-1">{receipt.businessAddress}</p>
         <p className="mb-1">{receipt.businessPhone}</p>
@@ -29,20 +41,37 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
         <span>{receipt.date.split(",")}</span>
         <span>{receipt.time}</span>
       </div>
+      <div className="border-t border-b border-dashed border-gray-400 py-2 mb-4">
+        <div className="mb-1">
+          <span>To: {receipt.customerName}</span>
+        </div>
+        <div className="mb-1">
+          <span>Order No.: {receipt.orderNo}</span>
+        </div>
+        <div className="mb-1">
+          <span>Receipt No.: {receipt.receiptNo}</span>
+        </div>
+      </div>
 
       <div className="mb-4">
-        <p className="font-bold mb-1">
-          # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-        </p>
-        <p className="font-bold mb-1"># # # CASH Sales Invoice # # #</p>
-        {receipt.invoiceReference && <p className="mb-1">Reference: {receipt.invoiceReference}</p>}
+        {/* <p className="font-bold mb-1"># # # CASH Sales Invoice # # #</p> */}
+        {receipt.invoiceReference && (
+          <p className="mb-1">Reference: {receipt.invoiceReference}</p>
+        )}
         {receipt.fsNo && <p className="mb-1">FS No. {receipt.fsNo}</p>}
-        {receipt.preparedBy && <p className="mb-1">Prepared by: {receipt.preparedBy}</p>}
-        {receipt.cashierName && <p className="mb-1">To: {receipt.cashierName}</p>}
-        {/* {receipt.waiterName && <p className="mb-1">Waiter: {receipt.waiterName}</p>} */}
-        <p className="font-bold mt-1">
-          # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-        </p>
+        {receipt.preparedBy && (
+          <p className="mb-1">Prepared by: {receipt.preparedBy}</p>
+        )}
+        {receipt.cashierName && (
+          <p className="mb-1">To: {receipt.cashierName}</p>
+        )}
+
+      </div>
+
+      <div className="flex justify-between border-t border-b border-dashed border-gray-400 py-2 mb-4">
+        <span>Description</span>
+        <span>QTY Price</span>
+        <span>Amount</span>
       </div>
 
       {/* Items */}
@@ -53,7 +82,9 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
             <span className="w-1/4 text-right">
               {item.quantity.toFixed(3)} x {item.price.toFixed(2)}
             </span>
-            <span className="w-1/4 text-right">*{item.lineTotal.toFixed(2)}</span>
+            <span className="w-1/4 text-right">
+              *{item.lineTotal.toFixed(2)}
+            </span>
           </div>
         ))}
       </div>
@@ -76,11 +107,17 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
 
       <div className="flex justify-between mb-1">
         <span>CASH</span>
-        <span>ETB {receipt.totalAmount.toFixed(2)}</span> {/* Assuming cash paid equals total */}
+        <span>ETB {receipt.totalAmount.toFixed(2)}</span>{" "}
+        {/* Assuming cash paid equals total */}
       </div>
       <div className="flex justify-between mb-4">
         <span>ITEM#</span>
         <span>{receipt.items.length}</span>
+      </div>
+
+      {/* QR Code */}
+      <div className="flex justify-center mb-4">
+        <img src={qrCodeUrl} alt="QR Code" className="w-24 h-24" />
       </div>
 
       {/* Footer */}
@@ -100,5 +137,5 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
         </Button>
       </div> */}
     </div>
-  )
+  );
 }

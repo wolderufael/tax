@@ -145,7 +145,7 @@ export default function HomePage() {
 
         {/* Latest News & Quick Links Section */}
         <section className="py-16 md:py-24 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-1 gap-12">
             {/* Latest News */}
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Latest News & Announcements</h2>
@@ -181,49 +181,6 @@ export default function HomePage() {
                     </Link>
                   </CardContent>
                 </Card>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Quick Links & Resources</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Link href="/business-license">
-                  <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4">
-                    <FileText className="w-8 h-8 text-blue-600" />
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-900">Apply for Business License</h3>
-                      <p className="text-sm text-gray-600">Start your new business registration.</p>
-                    </div>
-                  </Card>
-                </Link>
-                <Link href="/taxpayer">
-                  <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4">
-                    <Receipt className="w-8 h-8 text-green-600" />
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-900">Register as Taxpayer</h3>
-                      <p className="text-sm text-gray-600">Get your Taxpayer Identification Number (TIN).</p>
-                    </div>
-                  </Card>
-                </Link>
-                <Link href="/dashboard">
-                  <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4">
-                    <LayoutDashboard className="w-8 h-8 text-purple-600" />
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-900">Access Dashboard</h3>
-                      <p className="text-sm text-gray-600">Manage your certificates and data.</p>
-                    </div>
-                  </Card>
-                </Link>
-                <Link href="/forms">
-                  <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4">
-                    <LinkIcon className="w-8 h-8 text-orange-600" />
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-900">Download Forms</h3>
-                      <p className="text-sm text-gray-600">Find all necessary tax and business forms.</p>
-                    </div>
-                  </Card>
-                </Link>
               </div>
             </div>
           </div>

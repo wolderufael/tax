@@ -1,36 +1,62 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { MoreHorizontal } from "lucide-react"
-import type { Certificate } from "@/lib/mock-data"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
+import type { Certificate } from "@/lib/mock-data";
 
 interface CertificateManagementTableProps {
-  certificates: Certificate[]
+  certificates: Certificate[];
 }
 
-export function CertificateManagementTable({ certificates }: CertificateManagementTableProps) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterType, setFilterType] = useState("all")
-  const [filterStatus, setFilterStatus] = useState("all")
-  const [filterIssueDate, setFilterIssueDate] = useState("")
+export function CertificateManagementTable({
+  certificates,
+}: CertificateManagementTableProps) {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterIssueDate, setFilterIssueDate] = useState("");
 
   const filteredCertificates = certificates.filter((cert) => {
     const matchesSearch =
       cert.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cert.identifier.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cert.region.toLowerCase().includes(searchTerm.toLowerCase())
+      cert.region.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesType = filterType === "all" || cert.type === filterType
-    const matchesStatus = filterStatus === "all" || cert.status === filterStatus
-    const matchesIssueDate = filterIssueDate === "" || cert.issueDate === filterIssueDate
+    const matchesType = filterType === "all" || cert.type === filterType;
+    const matchesStatus =
+      filterStatus === "all" || cert.status === filterStatus;
+    const matchesIssueDate =
+      filterIssueDate === "" || cert.issueDate === filterIssueDate;
 
-    return matchesSearch && matchesType && matchesStatus && matchesIssueDate
-  })
+    return matchesSearch && matchesType && matchesStatus && matchesIssueDate;
+  });
+
+  const handleTypeClick = (type: string) => {
+    if (type === "Business License") {
+      router.push("/business-license");
+    } else if (type === "Taxpayer Registration") {
+      router.push("/taxPayer");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -87,7 +113,15 @@ export function CertificateManagementTable({ certificates }: CertificateManageme
               filteredCertificates.map((cert) => (
                 <TableRow key={cert.id}>
                   <TableCell>
-                    <Badge variant={cert.type === "Business License" ? "default" : "outline"}>{cert.type}</Badge>
+                    <Badge
+                      variant={
+                        cert.type === "Business License" ? "default" : "outline"
+                      }
+                      className="cursor-pointer hover:bg-blue-500 transition-colors"
+                      onClick={() => handleTypeClick(cert.type)}
+                    >
+                      {cert.type}
+                    </Badge>
                   </TableCell>
                   <TableCell className="font-medium">{cert.name}</TableCell>
                   <TableCell>{cert.identifier}</TableCell>
@@ -98,9 +132,10 @@ export function CertificateManagementTable({ certificates }: CertificateManageme
                       variant={
                         cert.status === "Active" || cert.status === "Registered"
                           ? "default"
-                          : cert.status === "Expired" || cert.status === "Suspended"
-                            ? "destructive"
-                            : "secondary"
+                          : cert.status === "Expired" ||
+                            cert.status === "Suspended"
+                          ? "destructive"
+                          : "secondary"
                       }
                     >
                       {cert.status}
@@ -115,13 +150,25 @@ export function CertificateManagementTable({ certificates }: CertificateManageme
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => alert(`Viewing ${cert.type} for ${cert.name}`)}>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            alert(`Viewing ${cert.type} for ${cert.name}`)
+                          }
+                        >
                           View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => alert(`Editing ${cert.type} for ${cert.name}`)}>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            alert(`Editing ${cert.type} for ${cert.name}`)
+                          }
+                        >
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => alert(`Changing status for ${cert.name}`)}>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            alert(`Changing status for ${cert.name}`)
+                          }
+                        >
                           Change Status
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -140,5 +187,5 @@ export function CertificateManagementTable({ certificates }: CertificateManageme
         </Table>
       </div>
     </div>
-  )
+  );
 }
