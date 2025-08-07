@@ -54,7 +54,7 @@ export function CertificateManagementTable({
     if (type === "Business License") {
       router.push("/business-license");
     } else if (type === "Taxpayer Registration") {
-      router.push("/taxPayer");
+      router.push("/dashboard/taxPayer/registration?tab=certificate");
     }
   };
 

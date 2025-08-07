@@ -26,7 +26,7 @@ export default function TaxpayerUsersPage() {
           <div className="flex items-center justify-between">
             <CardTitle>Taxpayer Registrations</CardTitle>
             <Button
-              onClick={() => router.push("/taxPayer")}
+              onClick={() => router.push("/dashboard/taxPayer/registration")}
               className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 font-semibold shadow-md"
             >
               <UserPlus className="w-4 h-4 mr-2" />

@@ -8,7 +8,9 @@ import { Download, Share2, Eye, EyeOff, Calendar, Hash, Verified } from "lucide-
 import Image from "next/image"
 
 interface TaxpayerData {
-  taxpayerIdNumber: string
+  //taxpayerIdNumber: string
+  FaydaID_FIN: string
+  FaydaID_OTP: string
   fullName: string
   fullNameAm: string
   region: string
@@ -87,7 +89,7 @@ export default function TaxpayerCertificate({ data }: TaxpayerCertificateProps) 
 
   // Generate QR code data
   const qrData = JSON.stringify({
-    id: data.taxpayerIdNumber,
+    id: data.FaydaID_FIN,
     name: data.fullName,
     certificate: data.certificateNumber,
     issued: data.dateOfIssuance,
@@ -209,7 +211,7 @@ export default function TaxpayerCertificate({ data }: TaxpayerCertificateProps) 
 
               <div className="mt-4 p-3 bg-slate-100 rounded-lg border border-slate-300">
                 <p className="text-2xl font-bold text-slate-900 font-mono">
-                  {maskSensitiveData(data.taxpayerIdNumber)}
+                  {maskSensitiveData(data.FaydaID_FIN)}
                 </p>
               </div>
             </div>
@@ -233,10 +235,10 @@ export default function TaxpayerCertificate({ data }: TaxpayerCertificateProps) 
                     </div>
                     <div>
                       <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">
-                        የግብር ከፋይ መለያ ቁጥር / Taxpayer ID
+                        የግብር ከፋይ ፋይዳ መለያ ቁጥር / Taxpayer Fayda ID FIN
                       </p>
                       <Badge variant="outline" className="font-mono border-slate-300">
-                        {maskSensitiveData(data.taxpayerIdNumber)}
+                        {maskSensitiveData(data.FaydaID_FIN)}
                       </Badge>
                     </div>
                     <div>
