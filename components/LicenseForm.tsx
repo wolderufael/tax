@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -25,6 +25,7 @@ import {
   Check,
 } from "lucide-react"
 import Certificate from "./certeficate"
+import { useSearchParams } from "next/navigation"
 
 
 interface BusinessData {
@@ -64,27 +65,27 @@ interface BusinessData {
 }
 
 const dummyData: BusinessData = {
-  ownerName: "Abeebe beso",
-  ownerNameAm: "አቤቤ በሶ",
+  ownerName: "Abebe Kebede Alemu",
+  ownerNameAm: "አበበ ከበደ አለሙ",
   nationality: "Ethiopian",
   nationalityAm: "ኢትዮጵያዊ",
-  tradeName: "Shiferaw Bakery Enterprise",
-  tradeNameAm: "ሺፈራው የኩባያ ኢንተርፕራይዝ",
-  generalManagerName: "Mr. Abel Shiferaw",
-  generalManagerNameAm: "አቤል ሺፈራው",
+  tradeName: "Abebe Bakery Enterprise",
+  tradeNameAm: "አበበ ቤከሪ ኢንተርፕራይዝ",
+  generalManagerName: "Mr. Abebe Kebede",
+  generalManagerNameAm: "አበበ ከበደ",
   region: "South Ethiopia",
   regionAm: "ደቡብ ኢትዮጵያ",
-  zoneSubCity: "DESSIE CITY",
-  zoneSubCityAm: "ደሴ ከተማ",
-  woreda: "Menafesha",
-  woredaAm: "መናፈሻ",
+  zoneSubCity: "Arba Minch",
+  zoneSubCityAm: "አርባ ምንጭ",
+  woreda: "Arba Minch",
+  woredaAm: "አርባ ምንጭ",
   kebele: "KEBELE 08",
   kebeleAm: "ቀበሌ 08",
-  photo:"https://github.com/shadcn.png",
+  photo:"/tax-mug-shot.jpg",
   houseNo: "new",
   telNo: "0947012893",
   fax: "",
-  email: "abel.shiferaw@email.com",
+  email: "abebe.kebede@email.com",
   fieldOfBusiness: "Manufacturing of bakery products",
   fieldOfBusinessAm: "የኩባያ ምርት አምራች",
   businessCode: "(31121)",
@@ -131,10 +132,18 @@ const steps = [
 ]
 
 export default function BusinessLicenseGenerator() {
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState<BusinessData>(dummyData)
   const [activeTab, setActiveTab] = useState("form")
   const [currentStep, setCurrentStep] = useState(1)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "certificate") {
+      setActiveTab("certificate");
+    }
+  }, [searchParams]);
 
   const handleInputChange = (field: keyof BusinessData, value: string) => {
     setFormData((prev) => ({

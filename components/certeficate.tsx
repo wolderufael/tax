@@ -1,74 +1,83 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Download, Share2, Eye, EyeOff, Shield, Calendar, Verified, Building2 } from "lucide-react"
-import Image from "next/image"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Download,
+  Share2,
+  Eye,
+  EyeOff,
+  Shield,
+  Calendar,
+  Verified,
+  Building2,
+} from "lucide-react";
+import Image from "next/image";
 
 interface BusinessData {
-  ownerName: string
-  ownerNameAm: string
-  nationality: string
-  nationalityAm: string
-  tradeName: string
-  tradeNameAm: string
-  generalManagerName: string
-  generalManagerNameAm: string
-  region: string
-  regionAm: string
-  zoneSubCity: string
-  zoneSubCityAm: string
-  woreda: string
-  woredaAm: string
-  kebele: string
-  kebeleAm: string
-  houseNo: string
-  telNo: string
-  fax?: string
-  email?: string
-  photo?: string
-  fieldOfBusiness: string
-  fieldOfBusinessAm: string
-  businessCode: string
-  capitalAmount: string
-  issueDate: string
-  issueLocation: string
-  issueLocationAm: string
-  officialName: string
-  officialNameAm: string
-  licenseNumber: string
-  registrationNumber: string
-  previousIssueDate: string
+  ownerName: string;
+  ownerNameAm: string;
+  nationality: string;
+  nationalityAm: string;
+  tradeName: string;
+  tradeNameAm: string;
+  generalManagerName: string;
+  generalManagerNameAm: string;
+  region: string;
+  regionAm: string;
+  zoneSubCity: string;
+  zoneSubCityAm: string;
+  woreda: string;
+  woredaAm: string;
+  kebele: string;
+  kebeleAm: string;
+  houseNo: string;
+  telNo: string;
+  fax?: string;
+  email?: string;
+  photo?: string;
+  fieldOfBusiness: string;
+  fieldOfBusinessAm: string;
+  businessCode: string;
+  capitalAmount: string;
+  issueDate: string;
+  issueLocation: string;
+  issueLocationAm: string;
+  officialName: string;
+  officialNameAm: string;
+  licenseNumber: string;
+  registrationNumber: string;
+  previousIssueDate: string;
 }
 
 interface CertificateProps {
-  data: BusinessData
+  data: BusinessData;
 }
 
 export default function Certificate({ data }: CertificateProps) {
-  const [showSensitiveData, setShowSensitiveData] = useState(true)
-  const [isDownloading, setIsDownloading] = useState(false)
+  const [showSensitiveData, setShowSensitiveData] = useState(true);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = async (format: "pdf" | "png" | "json") => {
-    setIsDownloading(true)
+    setIsDownloading(true);
 
     if (format === "json") {
-      const dataStr = JSON.stringify(data, null, 2)
-      const dataBlob = new Blob([dataStr], { type: "application/json" })
-      const url = URL.createObjectURL(dataBlob)
-      const link = document.createElement("a")
-      link.href = url
-      link.download = `business-license-${data.licenseNumber}.json`
-      link.click()
-      URL.revokeObjectURL(url)
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataBlob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `business-license-${data.licenseNumber}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
     } else {
-      window.print()
+      window.print();
     }
 
-    setTimeout(() => setIsDownloading(false), 1000)
-  }
+    setTimeout(() => setIsDownloading(false), 1000);
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -77,17 +86,20 @@ export default function Certificate({ data }: CertificateProps) {
           title: "Business License Certificate",
           text: `Business License for ${data.ownerName} - ${data.licenseNumber}`,
           url: window.location.href,
-        })
+        });
       } catch (err) {
-        console.log("Error sharing:", err)
+        console.log("Error sharing:", err);
       }
     }
-  }
+  };
 
   const maskSensitiveData = (value: string, showLength = 4) => {
-    if (showSensitiveData) return value
-    return value.slice(0, showLength) + "*".repeat(Math.max(0, value.length - showLength))
-  }
+    if (showSensitiveData) return value;
+    return (
+      value.slice(0, showLength) +
+      "*".repeat(Math.max(0, value.length - showLength))
+    );
+  };
 
   // Generate QR code data for business license
   const qrData = JSON.stringify({
@@ -97,9 +109,11 @@ export default function Certificate({ data }: CertificateProps) {
     issued: data.issueDate,
     authority: "South Ethiopia Trade Bureau",
     registration: data.registrationNumber,
-  })
+  });
 
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrData)}`
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
+    qrData
+  )}`;
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 ">
@@ -187,56 +201,67 @@ export default function Certificate({ data }: CertificateProps) {
           <div className="text-center mb-8 border-b-2 border-emerald-600 pb-6">
             <div className="flex items-center justify-center gap-8 mb-6">
               <div className="text-right">
-                <p className="text-sm font-semibold text-emerald-800">የደቡብ ኢትዮጵያ ክልላዊ መንግስት ንግድና ገበያ</p>
+                <p className="text-sm font-semibold text-emerald-800">
+                  የደቡብ ኢትዮጵያ ክልላዊ መንግስት ንግድና ገበያ
+                </p>
                 <p className="text-sm font-semibold text-emerald-800">ልማት ቢሮ</p>
               </div>
 
               <div className="relative">
-               <Image
-                 src="/logo1.png"
-                 alt="Business Owner"
-                 width={120}
-                 height={160}
-                 className="w-full h-full object-cover"
-               />
+                <Image
+                  src="/logo1.png"
+                  alt="Business Owner"
+                  width={120}
+                  height={160}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
               <div className="text-left">
-                <p className="text-sm font-semibold text-emerald-800">South Ethiopia Regional State Trade and Market</p>
-                <p className="text-sm font-semibold text-emerald-800">Development Bureau</p>
+                <p className="text-sm font-semibold text-emerald-800">
+                  South Ethiopia Regional State Trade and Market
+                </p>
+                <p className="text-sm font-semibold text-emerald-800">
+                  Development Bureau
+                </p>
               </div>
             </div>
           </div>
-
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             {/* Photo and QR Code */}
             <div className="space-y-6">
               <Card className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200">
                 <div className="space-y-4">
-                  <div className="border-2 border-emerald-300 w-full h-40 bg-emerald-100 flex items-center justify-center rounded-lg overflow-hidden">
-                    {data.photo ? (
-                      <Image
-                        src={data.photo}
-                        alt="Business Owner"
-                        width={120}
-                        height={160}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-emerald-600 text-sm font-medium">Photo</span>
-                    )}
+                  <div className="text-center">
+                    <div className="border-2 border-emerald-300 w-[120px] h-[160px] bg-emerald-100 flex items-center justify-center rounded-lg overflow-hidden mx-auto">
+                      {data.photo ? (
+                        <Image
+                          src={data.photo}
+                          alt="Business Owner"
+                          width={300}
+                          height={400}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <span className="text-emerald-600 text-sm font-medium">
+                          Photo
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="text-center">
                     <Image
                       src={qrCodeUrl || "/placeholder.svg"}
                       alt="License QR Code"
-                      width={100}
-                      height={100}
+                      width={70}
+                      height={70}
                       className="mx-auto border border-emerald-300 rounded-lg"
                     />
-                    <p className="text-xs text-emerald-600 mt-2 font-medium">Scan to verify license</p>
+                    <p className="text-xs text-emerald-600 mt-2 font-medium">
+                      Scan to verify license
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -278,7 +303,9 @@ export default function Certificate({ data }: CertificateProps) {
                         <span className="font-semibold text-emerald-800 text-xs uppercase tracking-wide block mb-1">
                           Business License No.
                         </span>
-                        <span className="font-mono text-emerald-900">ቁጥር ተሰጥቶ ፍ.1</span>
+                        <span className="font-mono text-emerald-900">
+                          ቁጥር ተሰጥቶ ፍ.1
+                        </span>
                       </div>
                     </div>
 
@@ -289,7 +316,9 @@ export default function Certificate({ data }: CertificateProps) {
                         </span>
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-emerald-600" />
-                          <span className="font-medium text-emerald-900">{data.previousIssueDate}</span>
+                          <span className="font-medium text-emerald-900">
+                            {data.previousIssueDate}
+                          </span>
                         </div>
                       </div>
 
@@ -299,7 +328,9 @@ export default function Certificate({ data }: CertificateProps) {
                         </span>
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-emerald-600" />
-                          <span className="font-medium text-emerald-900">{data.issueDate}</span>
+                          <span className="font-medium text-emerald-900">
+                            {data.issueDate}
+                          </span>
                         </div>
                       </div>
 
@@ -307,7 +338,9 @@ export default function Certificate({ data }: CertificateProps) {
                         <span className="font-semibold text-emerald-800 text-xs uppercase tracking-wide block mb-1">
                           Issue Location
                         </span>
-                        <span className="font-medium text-emerald-900">{data.issueLocation}</span>
+                        <span className="font-medium text-emerald-900">
+                          {data.issueLocation}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -345,74 +378,127 @@ export default function Certificate({ data }: CertificateProps) {
 
                   <div className="space-y-3">
                     <div className="p-3 bg-emerald-50/80 rounded-lg">
-                      <span className="font-semibold text-emerald-800 text-sm block mb-1">1. የግለሰብ/ድርጅት ስም</span>
-                      <div className="font-medium text-emerald-900">{maskSensitiveData(data.ownerNameAm)}</div>
+                      <span className="font-semibold text-emerald-800 text-sm block mb-1">
+                        1. የግለሰብ/ድርጅት ስም
+                      </span>
+                      <div className="font-medium text-emerald-900">
+                        {maskSensitiveData(data.ownerNameAm)}
+                      </div>
                     </div>
 
                     <div className="p-3 bg-emerald-50/80 rounded-lg">
-                      <span className="font-semibold text-emerald-800 text-sm block mb-1">2. ዜግነት</span>
-                      <div className="font-medium text-emerald-900">{data.nationalityAm}</div>
+                      <span className="font-semibold text-emerald-800 text-sm block mb-1">
+                        2. ዜግነት
+                      </span>
+                      <div className="font-medium text-emerald-900">
+                        {data.nationalityAm}
+                      </div>
                     </div>
 
                     <div className="p-3 bg-emerald-50/80 rounded-lg">
-                      <span className="font-semibold text-emerald-800 text-sm block mb-1">3. የንግድ ስም</span>
-                      <div className="font-medium text-emerald-900">{data.tradeNameAm}</div>
+                      <span className="font-semibold text-emerald-800 text-sm block mb-1">
+                        3. የንግድ ስም
+                      </span>
+                      <div className="font-medium text-emerald-900">
+                        {data.tradeNameAm}
+                      </div>
                     </div>
 
                     <div className="p-3 bg-emerald-50/80 rounded-lg">
-                      <span className="font-semibold text-emerald-800 text-sm block mb-1">4. ሥራ አስኪያጅ ስም</span>
-                      <div className="font-medium text-emerald-900">{data.generalManagerNameAm}</div>
+                      <span className="font-semibold text-emerald-800 text-sm block mb-1">
+                        4. ሥራ አስኪያጅ ስም
+                      </span>
+                      <div className="font-medium text-emerald-900">
+                        {data.generalManagerNameAm}
+                      </div>
                     </div>
 
                     <div className="p-3 bg-emerald-50/80 rounded-lg">
-                      <span className="font-semibold text-emerald-800 text-sm block mb-2">5. የንግድ ድርጅት አድራሻ</span>
+                      <span className="font-semibold text-emerald-800 text-sm block mb-2">
+                        5. የንግድ ድርጅት አድራሻ
+                      </span>
                       <div className="space-y-2 text-sm">
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <span className="text-xs text-emerald-600 block">ክልል:</span>
-                            <div className="font-medium text-emerald-900">{data.regionAm}</div>
+                            <span className="text-xs text-emerald-600 block">
+                              ክልል:
+                            </span>
+                            <div className="font-medium text-emerald-900">
+                              {data.regionAm}
+                            </div>
                           </div>
                           <div>
-                            <span className="text-xs text-emerald-600 block">ዞን/ክ/ከተማ:</span>
-                            <div className="font-medium text-emerald-900">{data.zoneSubCityAm}</div>
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <span className="text-xs text-emerald-600 block">ወረዳ:</span>
-                            <div className="font-medium text-emerald-900">{data.woredaAm}</div>
-                          </div>
-                          <div>
-                            <span className="text-xs text-emerald-600 block">ቀበሌ:</span>
-                            <div className="font-medium text-emerald-900">{data.kebeleAm}</div>
+                            <span className="text-xs text-emerald-600 block">
+                              ዞን/ክ/ከተማ:
+                            </span>
+                            <div className="font-medium text-emerald-900">
+                              {data.zoneSubCityAm}
+                            </div>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <span className="text-xs text-emerald-600 block">የቤት ቁጥር:</span>
-                            <div className="font-medium text-emerald-900">{data.houseNo}</div>
+                            <span className="text-xs text-emerald-600 block">
+                              ወረዳ:
+                            </span>
+                            <div className="font-medium text-emerald-900">
+                              {data.woredaAm}
+                            </div>
                           </div>
                           <div>
-                            <span className="text-xs text-emerald-600 block">ስልክ ቁጥር:</span>
-                            <div className="font-medium text-emerald-900">{maskSensitiveData(data.telNo)}</div>
+                            <span className="text-xs text-emerald-600 block">
+                              ቀበሌ:
+                            </span>
+                            <div className="font-medium text-emerald-900">
+                              {data.kebeleAm}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <span className="text-xs text-emerald-600 block">
+                              የቤት ቁጥር:
+                            </span>
+                            <div className="font-medium text-emerald-900">
+                              {data.houseNo}
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-xs text-emerald-600 block">
+                              ስልክ ቁጥር:
+                            </span>
+                            <div className="font-medium text-emerald-900">
+                              {maskSensitiveData(data.telNo)}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="p-3 bg-emerald-50/80 rounded-lg">
-                      <span className="font-semibold text-emerald-800 text-sm block mb-1">6. የንግድ ሥራ መስክ</span>
+                      <span className="font-semibold text-emerald-800 text-sm block mb-1">
+                        6. የንግድ ሥራ መስክ
+                      </span>
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="bg-emerald-200/80 text-emerald-800 text-xs">
+                        <Badge
+                          variant="secondary"
+                          className="bg-emerald-200/80 text-emerald-800 text-xs"
+                        >
                           {data.businessCode}
                         </Badge>
-                        <span className="font-medium text-emerald-900 text-sm">{data.fieldOfBusinessAm}</span>
+                        <span className="font-medium text-emerald-900 text-sm">
+                          {data.fieldOfBusinessAm}
+                        </span>
                       </div>
                     </div>
 
                     <div className="p-3 bg-emerald-50/80 rounded-lg">
-                      <span className="font-semibold text-emerald-800 text-sm block mb-1">7. ካፒታል በኢት ብር</span>
-                      <div className="font-bold text-lg text-emerald-900">{data.capitalAmount} ETB</div>
+                      <span className="font-semibold text-emerald-800 text-sm block mb-1">
+                        7. ካፒታል በኢት ብር
+                      </span>
+                      <div className="font-bold text-lg text-emerald-900">
+                        {data.capitalAmount} ETB
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -425,84 +511,145 @@ export default function Certificate({ data }: CertificateProps) {
 
                   <div className="space-y-3">
                     <div className="p-3 bg-teal-50/80 rounded-lg">
-                      <span className="font-semibold text-teal-800 text-sm block mb-1">1. Owner/Company Name</span>
-                      <div className="font-medium text-teal-900">{maskSensitiveData(data.ownerName)}</div>
+                      <span className="font-semibold text-teal-800 text-sm block mb-1">
+                        1. Owner/Company Name
+                      </span>
+                      <div className="font-medium text-teal-900">
+                        {maskSensitiveData(data.ownerName)}
+                      </div>
                     </div>
 
                     <div className="p-3 bg-teal-50/80 rounded-lg">
-                      <span className="font-semibold text-teal-800 text-sm block mb-1">2. Nationality</span>
-                      <div className="font-medium text-teal-900">{data.nationality}</div>
+                      <span className="font-semibold text-teal-800 text-sm block mb-1">
+                        2. Nationality
+                      </span>
+                      <div className="font-medium text-teal-900">
+                        {data.nationality}
+                      </div>
                     </div>
 
                     <div className="p-3 bg-teal-50/80 rounded-lg">
-                      <span className="font-semibold text-teal-800 text-sm block mb-1">3. Trade Name</span>
-                      <div className="font-medium text-teal-900">{data.tradeName}</div>
+                      <span className="font-semibold text-teal-800 text-sm block mb-1">
+                        3. Trade Name
+                      </span>
+                      <div className="font-medium text-teal-900">
+                        {data.tradeName}
+                      </div>
                     </div>
 
                     <div className="p-3 bg-teal-50/80 rounded-lg">
-                      <span className="font-semibold text-teal-800 text-sm block mb-1">4. General Manager Name</span>
-                      <div className="font-medium text-teal-900">{data.generalManagerName}</div>
+                      <span className="font-semibold text-teal-800 text-sm block mb-1">
+                        4. General Manager Name
+                      </span>
+                      <div className="font-medium text-teal-900">
+                        {data.generalManagerName}
+                      </div>
                     </div>
 
                     <div className="p-3 bg-teal-50/80 rounded-lg">
-                      <span className="font-semibold text-teal-800 text-sm block mb-2">5. Business Address</span>
+                      <span className="font-semibold text-teal-800 text-sm block mb-2">
+                        5. Business Address
+                      </span>
                       <div className="space-y-2 text-sm">
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <span className="text-xs text-teal-600 block">Region:</span>
-                            <div className="font-medium text-teal-900">{data.region}</div>
+                            <span className="text-xs text-teal-600 block">
+                              Region:
+                            </span>
+                            <div className="font-medium text-teal-900">
+                              {data.region}
+                            </div>
                           </div>
                           <div>
-                            <span className="text-xs text-teal-600 block">Zone/Sub City:</span>
-                            <div className="font-medium text-teal-900">{data.zoneSubCity}</div>
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <span className="text-xs text-teal-600 block">Woreda:</span>
-                            <div className="font-medium text-teal-900">{data.woreda}</div>
-                          </div>
-                          <div>
-                            <span className="text-xs text-teal-600 block">Kebele:</span>
-                            <div className="font-medium text-teal-900">{data.kebele}</div>
+                            <span className="text-xs text-teal-600 block">
+                              Zone/Sub City:
+                            </span>
+                            <div className="font-medium text-teal-900">
+                              {data.zoneSubCity}
+                            </div>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <span className="text-xs text-teal-600 block">House No.:</span>
-                            <div className="font-medium text-teal-900">{data.houseNo}</div>
+                            <span className="text-xs text-teal-600 block">
+                              Woreda:
+                            </span>
+                            <div className="font-medium text-teal-900">
+                              {data.woreda}
+                            </div>
                           </div>
                           <div>
-                            <span className="text-xs text-teal-600 block">Tel.No:</span>
-                            <div className="font-medium text-teal-900">{maskSensitiveData(data.telNo)}</div>
+                            <span className="text-xs text-teal-600 block">
+                              Kebele:
+                            </span>
+                            <div className="font-medium text-teal-900">
+                              {data.kebele}
+                            </div>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <span className="text-xs text-teal-600 block">Fax:</span>
-                            <div className="font-medium text-teal-900">{data.fax || "N/A"}</div>
+                            <span className="text-xs text-teal-600 block">
+                              House No.:
+                            </span>
+                            <div className="font-medium text-teal-900">
+                              {data.houseNo}
+                            </div>
                           </div>
                           <div>
-                            <span className="text-xs text-teal-600 block">E-mail:</span>
-                            <div className="font-medium text-teal-900">{maskSensitiveData(data.email || "N/A")}</div>
+                            <span className="text-xs text-teal-600 block">
+                              Tel.No:
+                            </span>
+                            <div className="font-medium text-teal-900">
+                              {maskSensitiveData(data.telNo)}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <span className="text-xs text-teal-600 block">
+                              Fax:
+                            </span>
+                            <div className="font-medium text-teal-900">
+                              {data.fax || "N/A"}
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-xs text-teal-600 block">
+                              E-mail:
+                            </span>
+                            <div className="font-medium text-teal-900">
+                              {maskSensitiveData(data.email || "N/A")}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="p-3 bg-teal-50/80 rounded-lg">
-                      <span className="font-semibold text-teal-800 text-sm block mb-1">6. Field of Business</span>
+                      <span className="font-semibold text-teal-800 text-sm block mb-1">
+                        6. Field of Business
+                      </span>
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="bg-teal-200/80 text-teal-800 text-xs">
+                        <Badge
+                          variant="secondary"
+                          className="bg-teal-200/80 text-teal-800 text-xs"
+                        >
                           {data.businessCode}
                         </Badge>
-                        <span className="font-medium text-teal-900 text-sm">{data.fieldOfBusiness}</span>
+                        <span className="font-medium text-teal-900 text-sm">
+                          {data.fieldOfBusiness}
+                        </span>
                       </div>
                     </div>
 
                     <div className="p-3 bg-teal-50/80 rounded-lg">
-                      <span className="font-semibold text-teal-800 text-sm block mb-1">7. Capital in ETB</span>
-                      <div className="font-bold text-lg text-teal-900">{data.capitalAmount} ETB</div>
+                      <span className="font-semibold text-teal-800 text-sm block mb-1">
+                        7. Capital in ETB
+                      </span>
+                      <div className="font-bold text-lg text-teal-900">
+                        {data.capitalAmount} ETB
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -514,18 +661,31 @@ export default function Certificate({ data }: CertificateProps) {
           <Card className="p-6 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200">
             <div className="flex justify-between items-center">
               <div className="space-y-2">
-                <p className="font-semibold text-emerald-800 text-sm">የሃላፊ ስም / Name of Official</p>
-                <p className="font-medium text-emerald-900">{data.officialNameAm}</p>
-                <p className="font-medium text-emerald-900">{data.officialName}</p>
+                <p className="font-semibold text-emerald-800 text-sm">
+                  የሃላፊ ስም / Name of Official
+                </p>
+                <p className="font-medium text-emerald-900">
+                  {data.officialNameAm}
+                </p>
+                <p className="font-medium text-emerald-900">
+                  {data.officialName}
+                </p>
                 <div className="mt-4">
-                  <p className="font-semibold text-emerald-800 text-sm">ፊርማ / Signature</p>
+                  <p className="font-semibold text-emerald-800 text-sm">
+                    ፊርማ / Signature
+                  </p>
                   <div className="w-48 h-12 border-b-2 border-emerald-400 mt-2"></div>
                 </div>
               </div>
 
               <div className="text-center">
-                <p className="text-xs text-emerald-600 uppercase tracking-wide mb-2">License Number</p>
-                <Badge variant="default" className="bg-emerald-700 text-white font-mono text-lg px-4 py-2">
+                <p className="text-xs text-emerald-600 uppercase tracking-wide mb-2">
+                  License Number
+                </p>
+                <Badge
+                  variant="default"
+                  className="bg-emerald-700 text-white font-mono text-lg px-4 py-2"
+                >
                   {data.licenseNumber}
                 </Badge>
               </div>
@@ -541,14 +701,17 @@ export default function Certificate({ data }: CertificateProps) {
             <Verified className="w-4 h-4 text-white" />
           </div>
           <div>
-            <p className="font-semibold text-emerald-900">License Verified & Authenticated</p>
+            <p className="font-semibold text-emerald-900">
+              License Verified & Authenticated
+            </p>
             <p className="text-sm text-emerald-700">
-              This business license is digitally verified. Scan the QR code above or use license number:{" "}
-              {data.licenseNumber} for verification.
+              This business license is digitally verified. Scan the QR code
+              above or use license number: {data.licenseNumber} for
+              verification.
             </p>
           </div>
         </div>
       </Card>
     </div>
-  )
+  );
 }

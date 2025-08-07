@@ -52,7 +52,7 @@ export function CertificateManagementTable({
 
   const handleTypeClick = (type: string) => {
     if (type === "Business License") {
-      router.push("/business-license");
+      router.push("/business-license?tab=certificate");
     } else if (type === "Taxpayer Registration") {
       router.push("/dashboard/taxPayer/registration?tab=certificate");
     }
