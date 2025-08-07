@@ -4,10 +4,22 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ReceiptData } from "@/lib/mock-data";
 
-export default function ReceiptPage({ params }: { params: { id: string } }) {
+export default function ReceiptPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const searchParams = useSearchParams();
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [receiptId, setReceiptId] = useState<string>("");
+
+  useEffect(() => {
+    // Handle async params in Next.js 15
+    params.then((resolvedParams) => {
+      setReceiptId(resolvedParams.id);
+    });
+  }, [params]);
 
   useEffect(() => {
     const dataParam = searchParams.get("data");
