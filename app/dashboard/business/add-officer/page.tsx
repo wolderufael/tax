@@ -86,7 +86,7 @@ export default function AddTaxOfficerPage() {
           </Button>
           <div>
             <h1 className="text-3xl font-bold text-blue-800">
-              Add Tax Officer
+              Register Tax Officer
             </h1>
             <p className="text-blue-700">
               Enter the details for the new tax officer
@@ -198,7 +198,7 @@ export default function AddTaxOfficerPage() {
                   className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 font-semibold shadow-md"
                   disabled={loading}
                 >
-                  {loading ? "Adding Officer..." : "Add Tax Officer"}
+                  {loading ? "Registering..." : "Register"}
                 </Button>
               </div>
             </form>

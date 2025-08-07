@@ -30,7 +30,7 @@ export default function BusinessUsersPage() {
               className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 font-semibold shadow-md"
             >
               <UserPlus className="w-4 h-4 mr-2" />
-              Add Tax Officer
+              Register Tax Officer
             </Button>
           </div>
         </CardHeader>

@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
-import { usePathname } from "next/navigation"
-import Link from "next/link"
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { useState } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -11,9 +12,69 @@ import {
   BarChart3,
   Clock,
   AlertCircle,
-  Shield,
   Receipt,
-} from "lucide-react"
+  ChevronDown,
+  ChevronRight,
+  UserPlus,
+  FileText,
+  Calculator,
+  CreditCard,
+  Banknote,
+  Building,
+  CheckCircle,
+  DollarSign,
+  Percent,
+  Stamp,
+  Wallet,
+  History,
+  TrendingDown,
+  Gift,
+  Send,
+  Eye,
+  RefreshCw,
+  Award,
+  Search as SearchIcon,
+  ShieldCheck,
+  Calendar,
+  ClipboardList,
+  ScrollText,
+  PiggyBank,
+  TrendingUp,
+  Coins,
+  Landmark,
+  BookOpen,
+  Star,
+  BadgeCheck,
+  FileCheck,
+  Database,
+  CreditCard as PaymentIcon,
+  ArrowDownCircle,
+  RotateCcw,
+  CheckSquare,
+  Building2,
+  FileSearch,
+  Zap,
+  Target,
+  UserCheck,
+  FileBarChart,
+  BarChart2,
+  UserCog,
+  Lock,
+  Cog,
+  Bell,
+  HelpCircle,
+  MessageSquare,
+  ThumbsUp,
+  Shield,
+  UserX,
+  Activity,
+  Headphones,
+  MessageCircle,
+  FileSpreadsheet,
+  ShieldAlert,
+  PieChart,
+  Clipboard,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,73 +86,311 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   useSidebar,
-} from "@/components/ui/sidebar"
-import Image from "next/image"
+} from "@/components/ui/sidebar";
+import Image from "next/image";
 
-const mainItems = [
-  { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Manage Tax Officers", url: "/dashboard/business", icon: Briefcase },
-  { title: "Manage Tax Payers", url: "/dashboard/taxPayer", icon: Users },
-  { title: "Certificate Management", url: "/dashboard/certificates", icon: Receipt },
-  { title: "Revenue", url: "/dashboard/revenue", icon: BarChart3 }, // Placeholder
-]
-
-const requestmanagementItems = [
-  { title: "Tax Clearance Certificate Request Manager", icon: Clock }, // Placeholder
-  { title: "Refund Request Manager", icon: AlertCircle }, // Placeholder
+const TaxCenter = [
+  { title: "Manage Tax Center", icon: Building2 }, // Tax building/center icon
 ];
-const managementItems = [
-  { title: "Pending Approvals", icon: Clock }, // Placeholder
-  { title: "Expiring Soon",  icon: AlertCircle }, // Placeholder
-  { title: "Search & Filters",  icon: Search }, // Placeholder
-  { title: "Audit Log",  icon: Shield }, // Placeholder
-]
 
-const systemItems = [
-  { title: "Settings",icon: Settings }, // Placeholder
-]
+const manageTaxOfficers = [
+  { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
+  {
+    title: "Tax Officer Registration",
+    icon: UserPlus,
+    url: "/dashboard/business/add-officer",
+  },
+  { title: "Manage Tax Officers", url: "/dashboard/business", icon: UserCog },
+  { title: "Tax Officers Assignment", url: "/dashboard", icon: Target },
+  { title: "Tax Officers Performance", url: "/dashboard", icon: Activity },
+  { title: "Manage Tax Payers", url: "/dashboard/taxPayer", icon: Users },
+  {
+    title: "Certificate Management",
+    url: "/dashboard/certificates",
+    icon: Award,
+  },
+  { title: "Revenue", url: "/dashboard/revenue", icon: PieChart },
+];
+
+const taxPayerManagement = [
+  {
+    title: "User Registration",
+    icon: UserPlus,
+    children: [
+      {
+        title: "Register Taxpayer User",
+        icon: UserPlus,
+        url: "/dashboard/taxPayer/registration",
+      },
+    ],
+  },
+  {
+    title: "Clearance Certificates",
+    icon: FileText,
+    children: [
+      {
+        title: "Tax Clearance Certificate Requests",
+        icon: FileText,
+        url: "/dashboard",
+      },
+      {
+        title: "Clearance Requests List",
+        icon: FileText,
+        url: "/dashboard",
+      },
+    ],
+  },
+  {
+    title: "Tax Declarations",
+    icon: Calculator,
+    children: [
+      {
+        title: "SCHED D-DIVIDENDS",
+        icon: DollarSign,
+        url: "/dashboard",
+      },
+      {
+        title: "SCHED D-GAIN-ON-SHARES",
+        icon: TrendingDown,
+        url: "/dashboard",
+      },
+      {
+        title: "SCHEDULE-A-PAYE (MONTHLY)",
+        icon: Calendar,
+        url: "/dashboard",
+      },
+      {
+        title: "SCHEDULE C-NORMAL",
+        icon: FileText,
+        url: "/dashboard",
+      },
+      {
+        title: "VALUE ADDED TAX (VAT)",
+        icon: Percent,
+        url: "/dashboard",
+      },
+      {
+        title: "WITHHOLDING TAX ON PAYMENT",
+        icon: CreditCard,
+        url: "/dashboard",
+      },
+      {
+        title: "CAPITAL GAINS TAX",
+        icon: Banknote,
+        url: "/dashboard",
+      },
+      {
+        title: "STAMP DUTIES",
+        icon: Stamp,
+        url: "/dashboard",
+      },
+    ],
+  },
+  {
+    title: "Tax Accounts",
+    icon: Wallet,
+    children: [
+      {
+        title: "Account Balances",
+        icon: Wallet,
+        url: "/dashboard",
+      },
+      {
+        title: "Payment History",
+        icon: History,
+        url: "/dashboard",
+      },
+      {
+        title: "Arrears Management",
+        icon: AlertCircle,
+        url: "/dashboard",
+      },
+    ],
+  },
+  {
+    title: "Refunds",
+    icon: Gift,
+    children: [
+      {
+        title: "Potential Refunds",
+        icon: Gift,
+        url: "/dashboard",
+      },
+      {
+        title: "Refund Applications",
+        icon: Send,
+        url: "/dashboard",
+      },
+      {
+        title: "Refund Status Tracking",
+        icon: Eye,
+        url: "/dashboard",
+      },
+    ],
+  },
+  {
+    title: "Business Licensing",
+    icon: Building,
+    children: [
+      {
+        title: "Business License Renewal",
+        icon: RefreshCw,
+        url: "/dashboard",
+      },
+      {
+        title: "Renewal Applications",
+        icon: Send,
+        url: "/dashboard",
+      },
+      {
+        title: "License Status",
+        icon: Award,
+        url: "/dashboard",
+      },
+    ],
+  },
+  {
+    title: "Validation Services",
+    icon: ShieldCheck,
+    children: [
+      {
+        title: "Validate TIN",
+        icon: SearchIcon,
+        url: "/dashboard",
+      },
+      {
+        title: "Validate Tax Clearance",
+        icon: CheckCircle,
+        url: "/dashboard",
+      },
+      {
+        title: "Verify Compliance Status",
+        icon: ShieldCheck,
+        url: "/dashboard",
+      },
+    ],
+  },
+];
+
+const reportingItems = [
+  { title: "Tax Collection Reports", icon: FileBarChart },
+  { title: "Taxpayer Compliance Reports", icon: FileSpreadsheet },
+  { title: "Revenue Analysis", icon: BarChart2 },
+  { title: "Audit Trail", icon: Clipboard },
+];
+const systemAdministration = [
+  { title: "User Management", icon: UserCog },
+  { title: "Role Permissions", icon: Lock },
+  { title: "System Configuration", icon: Cog },
+  { title: "Notifications Settings", icon: Bell },
+];
+const supportItems = [
+  { title: "User Guides", icon: BookOpen },
+  { title: "FAQs", icon: HelpCircle },
+  { title: "Contact Support", icon: Headphones },
+  { title: "Feedback", icon: MessageSquare },
+];
 
 export function AppSidebar() {
-  const { state } = useSidebar()
-  const pathname = usePathname()
-  const isCollapsed = state === "collapsed"
+  const { state } = useSidebar();
+  const pathname = usePathname();
+  const isCollapsed = state === "collapsed";
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [activeItem, setActiveItem] = useState<string>("Overview"); // Track which item is actually active
 
-  const isActive = (path: string) => {
-    if (path === "/dashboard") {
-      return pathname === "/dashboard" || pathname.startsWith("/dashboard/")
+  const isActive = (path: string, title?: string) => {
+    // For items with unique URLs, use URL matching
+    if (path !== "/dashboard") {
+      return pathname === path;
     }
-    return pathname.startsWith(path)
-  } 
+    // For items sharing /dashboard URL, use the clicked item tracking
+    return activeItem === title;
+  };
+
+  const handleItemClick = (title: string) => {
+    setActiveItem(title);
+  };
+
+  const toggleExpanded = (title: string) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [title]: !prev[title],
+    }));
+  };
 
   return (
     <Sidebar className="border-r border-border bg-background">
       <SidebarHeader className="p-4 border-b border-border">
         <div className="flex items-center gap-2">
           <div className=" rounded-md ">
-            <Image src="/logo1.png" alt="Logo" width={40} height={40} className="rounded-full" />
+            <Image
+              src="/logo1.png"
+              alt="Logo"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
           </div>
           {!isCollapsed && (
             <div>
-              <h2 className="text-lg font-semibold text-foreground">Revenue Authority</h2>
-              <p className="text-xs text-muted-foreground">Management Dashboard</p>
+              <h2 className="text-lg font-semibold text-foreground">
+                Revenue Authority
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Management Dashboard
+              </p>
             </div>
           )}
         </div>
       </SidebarHeader>
       <SidebarContent className="p-2">
-        {/* Main Navigation */}
+        {/* Tax Center */}
         <SidebarGroup>
           {!isCollapsed && (
             <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Main Navigation
+              Tax Center
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainItems.map(({ title, url, icon: Icon }) => (
+              {TaxCenter.map(({ title, icon: Icon }) => {
+                const itemUrl = "/dashboard"; // Default or dynamic URL if needed
+                return (
+                  <SidebarMenuItem key={title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive(itemUrl, title)}
+                    >
+                      <Link
+                        href={itemUrl}
+                        onClick={() => handleItemClick(title)}
+                      >
+                        <Icon />
+                        {!isCollapsed && <span>{title}</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Tax Officer Management */}
+        <SidebarGroup>
+          {!isCollapsed && (
+            <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Tax Officer Management
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {manageTaxOfficers.map(({ title, url, icon: Icon }) => (
                 <SidebarMenuItem key={title}>
-                  <SidebarMenuButton asChild isActive={isActive(url)}>
-                    <Link href={url}>
+                  <SidebarMenuButton asChild isActive={isActive(url, title)}>
+                    <Link href={url} onClick={() => handleItemClick(title)}>
                       <Icon />
                       {!isCollapsed && <span>{title}</span>}
                     </Link>
@@ -102,46 +401,91 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Management */}
+        {/* Tax Payer Management */}
         <SidebarGroup>
           {!isCollapsed && (
             <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Management
+              Tax Payer Management
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
             <SidebarMenu>
-              {managementItems.map(({ title, icon: Icon }) => {
-                const itemUrl = '/dashboard'; // Default or dynamic URL if needed
+              {taxPayerManagement.map(({ title, icon: Icon, children }) => {
+                const isExpanded = expandedItems[title];
                 return (
-                  <SidebarMenuItem key={title}>
-                    <SidebarMenuButton asChild >
-                      <Link href={itemUrl}>
+                  <div key={title}>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        onClick={() => toggleExpanded(title)}
+                        className="flex items-center justify-between w-full"
+                      >
+                        {/* <div className="flex items-center gap-2"> */}
                         <Icon />
                         {!isCollapsed && <span>{title}</span>}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                        {/* </div> */}
+                        {!isCollapsed && (
+                          <div className="ml-auto">
+                            {isExpanded ? (
+                              <ChevronDown className="h-4 w-4" />
+                            ) : (
+                              <ChevronRight className="h-4 w-4" />
+                            )}
+                          </div>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+
+                    {/* Children items */}
+                    {isExpanded && !isCollapsed && children && (
+                      <div className="ml-6 space-y-1">
+                        {children.map(
+                          ({ title: childTitle, icon: ChildIcon, url }) => (
+                            <SidebarMenuItem key={childTitle}>
+                              <SidebarMenuButton
+                                asChild
+                                isActive={isActive(url || "", childTitle)}
+                              >
+                                <Link
+                                  href={url || "/dashboard"}
+                                  onClick={() => handleItemClick(childTitle)}
+                                >
+                                  <ChildIcon className="h-4 w-4" />
+                                  <span className="text-sm">{childTitle}</span>
+                                </Link>
+                              </SidebarMenuButton>
+                            </SidebarMenuItem>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {/* Request Management */}
+
+        {/* Reporting */}
         <SidebarGroup>
           {!isCollapsed && (
             <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Request Management
+              Reporting
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
             <SidebarMenu>
-              {requestmanagementItems.map(({ title, icon: Icon }) => {
-                const itemUrl = '/dashboard'; // Default or dynamic URL if needed
+              {reportingItems.map(({ title, icon: Icon }) => {
+                const itemUrl = "/dashboard"; // Default or dynamic URL if needed
                 return (
                   <SidebarMenuItem key={title}>
-                    <SidebarMenuButton asChild >
-                      <Link href={itemUrl}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive(itemUrl, title)}
+                    >
+                      <Link
+                        href={itemUrl}
+                        onClick={() => handleItemClick(title)}
+                      >
                         <Icon />
                         {!isCollapsed && <span>{title}</span>}
                       </Link>
@@ -153,20 +497,41 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* System */}
+        {/* System Administration */}
         <SidebarGroup>
           {!isCollapsed && (
             <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              System
+              System Administration
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
             <SidebarMenu>
-              {systemItems.map(({ title, icon: Icon }) => (
+              {systemAdministration.map(({ title, icon: Icon }) => (
                 <SidebarMenuItem key={title}>
-                  <SidebarMenuButton  >
-                      <Icon />
-                      {!isCollapsed && <span>{title}</span>}
+                  <SidebarMenuButton>
+                    <Icon />
+                    {!isCollapsed && <span>{title}</span>}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Support */}
+        <SidebarGroup>
+          {!isCollapsed && (
+            <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Support
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {supportItems.map(({ title, icon: Icon }) => (
+                <SidebarMenuItem key={title}>
+                  <SidebarMenuButton>
+                    <Icon />
+                    {!isCollapsed && <span>{title}</span>}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -175,5 +540,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
