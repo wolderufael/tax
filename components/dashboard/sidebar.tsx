@@ -98,9 +98,9 @@ const manageTaxOfficers = [
   {
     title: "Tax Officer Registration",
     icon: UserPlus,
-    url: "/dashboard/business/add-officer",
+    url: "/dashboard/officers/add-officer",
   },
-  { title: "Manage Tax Officers", url: "/dashboard/business", icon: UserCog },
+  { title: "Manage Tax Officers", url: "/dashboard/officers", icon: UserCog },
   { title: "Tax Officers Assignment", url: "/dashboard", icon: Target },
   { title: "Tax Officers Performance", url: "/dashboard", icon: Activity },
   { title: "Manage Tax Payers", url: "/dashboard/taxPayer", icon: Users },

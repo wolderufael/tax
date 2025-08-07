@@ -10,16 +10,31 @@ export interface BusinessUser {
   region: string
 }
 
+export interface TaxOfficer {
+  id: string;
+  userName: string;
+  employeeId: string,
+  userId: string,
+  taxCenter: string,
+  taxAuthority: string,
+  registrationDate: string,
+  deregistrationDate: string,
+  suspendedAccount: string,
+  registrationOfficer:string
+}
+
 export interface TaxpayerUser {
-  id: string
-  fullName: string
-  taxpayerIdNumber: string
-  dateOfIssuance: string
-  businessType: string
-  status: "Registered" | "Pending" | "Suspended"
-  email: string
-  phoneNumber: string
-  region: string
+  id: string;
+  tin: string;
+  taxPayerName: string;
+  userName: string;
+  userId: string;
+  taxCenter: string;
+  taxAuthority: string;
+  registrationDate: string;
+  deregistrationDate: string;
+  suspendedAccount: string;
+  registrationOfficer: string;
 }
 
 export interface Certificate {
@@ -110,61 +125,123 @@ export const mockBusinessUsers: BusinessUser[] = [
   },
 ]
 
+export const mockTaxOfficers: TaxOfficer[] = [
+  {
+    id: "to-001",
+    userName: "Dawit Tesfaye",
+    employeeId: "STX/001",
+    userId: "dawit.t",
+    taxCenter: "South Ethiopia",
+    taxAuthority: "South Ethiopia",
+    registrationDate: "12/12/2016",
+    deregistrationDate: "",
+    suspendedAccount: "N",
+    registrationOfficer: "Amanuel Tadesse",
+  },
+  {
+    id: "to-002",
+    userName: "Bethelhem Ayalew",
+    employeeId: "STX/002",
+    userId: "bethelhem.a",
+    taxCenter: "South Ethiopia",
+    taxAuthority: "South Ethiopia",
+    registrationDate: "08/11/2016",
+    deregistrationDate: "",
+    suspendedAccount: "N",
+    registrationOfficer: "Amanuel Tadesse",
+  },
+  {
+    id: "to-003",
+    userName: "Biniyam Belete",
+    employeeId: "STX/003",
+    userId: "biniyam.b",
+    taxCenter: "South Ethiopia",
+    taxAuthority: "South Ethiopia",
+    registrationDate: "12/12/2016",
+    deregistrationDate: "",
+    suspendedAccount: "N",
+    registrationOfficer: "Amanuel Tadesse",
+  },
+  {
+    id: "to-004",
+    userName: "Yonas Getachew",
+    employeeId: "STX/004",
+    userId: "yonas.g",
+    taxCenter: "South Ethiopia",
+    taxAuthority: "South Ethiopia",
+    registrationDate: "12/12/2016",
+    deregistrationDate: "",
+    suspendedAccount: "N",
+    registrationOfficer: "Amanuel Tadesse",
+  },
+]
+
+
 export const mockTaxpayerUsers: TaxpayerUser[] = [
   {
     id: "tp-001",
-    fullName: "Abel Shiferaw Ayalew",
-    taxpayerIdNumber: "0090638794",
-    dateOfIssuance: "08 HAMLE 2016",
-    businessType: "Manufacturing",
-    status: "Registered",
-    email: "abel.s@example.com",
-    phoneNumber: "0947012893",
-    region: "South Ethiopia",
+    tin: "0090638794",
+    taxPayerName: "Biniyam Belete",
+    userName: "biniyam.b",
+    userId: "biniyam.b",
+    taxCenter: "South Ethiopia",
+    taxAuthority: "South Ethiopia",
+    registrationDate: "12/12/2016",
+    deregistrationDate: "",
+    suspendedAccount: "N",
+    registrationOfficer: "Amanuel Tadesse",
   },
   {
     id: "tp-002",
-    fullName: "Sara Mekonnen",
-    taxpayerIdNumber: "0080527683",
-    dateOfIssuance: "15 NEHASE 2015",
-    businessType: "Service",
-    status: "Registered",
-    email: "sara.m@example.com",
-    phoneNumber: "0968765432",
-    region: "Oromia",
+    tin: "0080527683",
+    taxPayerName: "Sara Mekonnen",
+    userName: "sara.m",
+    userId: "sara.m",
+    taxCenter: "South Ethiopia",
+    taxAuthority: "South Ethiopia",
+    registrationDate: "12/12/2016",
+    deregistrationDate: "",
+    suspendedAccount: "N",
+    registrationOfficer: "Amanuel Tadesse",
   },
   {
     id: "tp-003",
-    fullName: "Dawit Tesfaye",
-    taxpayerIdNumber: "0070416572",
-    dateOfIssuance: "20 MESKEREM 2016",
-    businessType: "Trading",
-    status: "Pending",
-    email: "dawit.t@example.com",
-    phoneNumber: "0979876543",
-    region: "SNNPR",
+        tin: "0070416572",
+    taxPayerName: "Dawit Tesfaye",
+    userName: "dawit.t",
+    userId: "dawit.t",
+    taxCenter: "South Ethiopia",
+    taxAuthority: "South Ethiopia",
+    registrationDate: "12/12/2016",
+    deregistrationDate: "",
+    suspendedAccount: "N",
+    registrationOfficer: "Amanuel Tadesse",
   },
   {
     id: "tp-004",
-    fullName: "Aster Kebede",
-    taxpayerIdNumber: "0060305461",
-    dateOfIssuance: "05 TIKIMT 2017",
-    businessType: "Agriculture",
-    status: "Registered",
-    email: "aster.k@example.com",
-    phoneNumber: "0980987654",
-    region: "Benishangul-Gumuz",
+    tin: "0060305461",
+    taxPayerName: "Aster Kebede",
+    userName: "aster.k",
+    userId: "aster.k",
+    taxCenter: "South Ethiopia",
+    taxAuthority: "South Ethiopia",
+    registrationDate: "12/12/2016",
+    deregistrationDate: "",
+    suspendedAccount: "N",
+    registrationOfficer: "Amanuel Tadesse",
   },
   {
     id: "tp-005",
-    fullName: "Yonas Getachew",
-    taxpayerIdNumber: "0050294350",
-    dateOfIssuance: "10 HIDAR 2018",
-    businessType: "Construction",
-    status: "Suspended",
-    email: "yonas.g@example.com",
-    phoneNumber: "0991098765",
-    region: "Gambela",
+      tin: "0050294350",
+    taxPayerName: "Yonas Getachew",
+    userName: "yonas.g",
+    userId: "yonas.g",
+    taxCenter: "South Ethiopia",
+    taxAuthority: "South Ethiopia",
+    registrationDate: "12/12/2016",
+    deregistrationDate: "",
+    suspendedAccount: "N",
+    registrationOfficer: "Amanuel Tadesse",
   },
 ]
 
@@ -318,11 +395,11 @@ export const allCertificates: Certificate[] = [
   ...mockTaxpayerUsers.map((user) => ({
     id: user.id,
     type: "Taxpayer Registration" as const,
-    name: user.fullName,
-    identifier: user.taxpayerIdNumber,
-    issueDate: user.dateOfIssuance,
-    status: user.status,
-    region: user.region,
+    name: user.taxPayerName,
+    identifier: user.tin,
+    issueDate: user.registrationDate,
+    status: user.suspendedAccount as "Active" | "Expired" | "Pending" | "Registered" | "Suspended",
+    region: user.taxCenter,
   })),
 ]
 
@@ -393,3 +470,4 @@ export const mockReceiptData: ReceiptData = {
   orderNo: "1234567890",
   receiptNo: "1234567890",
 }
+
