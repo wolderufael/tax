@@ -44,7 +44,7 @@ export default function Login() {
       setTimeout(() => {
         // Redirect based on user type
         const redirectPath =
-          activeTab === "officer" ? "/dashboard" : "/dashboard/taxPayer";
+          activeTab === "officer" ? "/dashboard" : "/taxpayer-dashboard";
         window.location.href = redirectPath;
       }, 1000);
       setForm({ email: "", password: "" });
