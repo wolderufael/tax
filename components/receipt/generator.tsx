@@ -1,39 +1,72 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { PlusCircle, Trash2, ReceiptText, DollarSign, ClipboardList, Building, Phone, Hash } from "lucide-react"
-import { ReceiptData, ReceiptItem } from "@/lib/mock-data"
-import ReceiptPreview from "./preview"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  PlusCircle,
+  Trash2,
+  ReceiptText,
+  DollarSign,
+  ClipboardList,
+  Building,
+  Phone,
+  Hash,
+} from "lucide-react";
+import { ReceiptData, ReceiptItem } from "@/lib/mock-data";
+import ReceiptPreview from "./preview";
 
 export default function ReceiptGeneratorPage() {
-  const [items, setItems] = useState<ReceiptItem[]>([])
-  const [productName, setProductName] = useState("")
-  const [quantity, setQuantity] = useState<any>()
-  const [price, setPrice] = useState<any>()
-  const [type, setType] = useState("General")
+  const [items, setItems] = useState<ReceiptItem[]>([]);
+  const [productName, setProductName] = useState("");
+  const [quantity, setQuantity] = useState<any>();
+  const [price, setPrice] = useState<any>();
+  const [type, setType] = useState("General");
 
   // New state for receipt header details
-  const [tin, setTin] = useState("90123456")
-  const [businessName, setBusinessName] = useState("YEKATIT HOSPITAL")
-  const [businessAddress, setBusinessAddress] = useState("R/AS/C BOLE W.09 H.NO NEW AROUND GORO SEFERA")
-  const [businessPhone, setBusinessPhone] = useState("0116478100/0911360005")
-  const [customerName, setCustomerName] = useState("Jhon Doe")
-  const [cashierName, setCashierName] = useState("Hirut G")
-  const [waiterName, setWaiterName] = useState("konjit")
-  const [fsNo, setFsNo] = useState("00075906")
-  const [invoiceReference, setInvoiceReference] = useState("CS1-S11-01-0003789")
-  const [preparedBy, setPreparedBy] = useState("SRE")
-  const [ercaClb, setErcaClb] = useState("CLB00008701")
+  const [tin, setTin] = useState("90123456");
+  const [businessName, setBusinessName] = useState("YEKATIT HOSPITAL");
+  const [businessAddress, setBusinessAddress] = useState(
+    "R/AS/C BOLE W.09 H.NO NEW AROUND GORO SEFERA"
+  );
+  const [businessPhone, setBusinessPhone] = useState("0116478100/0911360005");
+  const [customerName, setCustomerName] = useState("Jhon Doe");
+  const [cashierName, setCashierName] = useState("Hirut G");
+  const [waiterName, setWaiterName] = useState("konjit");
+  const [fsNo, setFsNo] = useState("00075906");
+  const [invoiceReference, setInvoiceReference] =
+    useState("CS1-S11-01-0003789");
+  const [preparedBy, setPreparedBy] = useState("SRE");
+  const [ercaClb, setErcaClb] = useState("CLB00008701");
 
-  const [generatedReceipt, setGeneratedReceipt] = useState<ReceiptData | null>(null)
+  const [generatedReceipt, setGeneratedReceipt] = useState<ReceiptData | null>(
+    null
+  );
 
-  const VAT_RATE = 0.15 // 15% VAT
+  const VAT_RATE = 0.15; // 15% VAT
 
   const handleAddItem = () => {
     if (productName && quantity > 0 && price >= 0) {
@@ -44,41 +77,49 @@ export default function ReceiptGeneratorPage() {
         price,
         type,
         lineTotal: quantity * price,
-      }
-      setItems([...items, newItem])
-      setProductName("")
-      setQuantity(1)
-      setPrice(0)
-      setType("General")
+      };
+      setItems([...items, newItem]);
+      setProductName("");
+      setQuantity(1);
+      setPrice(0);
+      setType("General");
     } else {
-      alert("Please fill in all item details correctly.")
+      alert("Please fill in all item details correctly.");
     }
-  }
+  };
 
   const handleRemoveItem = (id: string) => {
-    setItems(items.filter((item) => item.id !== id))
-  }
+    setItems(items.filter((item) => item.id !== id));
+  };
 
   const calculateTotals = () => {
-    const subtotal = items.reduce((sum, item) => sum + item.lineTotal, 0)
-    const vatAmount = subtotal * VAT_RATE
-    const totalAmount = subtotal + vatAmount
-    return { subtotal, vatAmount, totalAmount }
-  }
+    const subtotal = items.reduce((sum, item) => sum + item.lineTotal, 0);
+    const vatAmount = subtotal * VAT_RATE;
+    const totalAmount = subtotal + vatAmount;
+    return { subtotal, vatAmount, totalAmount };
+  };
 
   const handleGenerateReceipt = () => {
     if (items.length === 0) {
-      alert("Please add at least one item to generate a receipt.")
-      return
+      alert("Please add at least one item to generate a receipt.");
+      return;
     }
 
-    const { subtotal, vatAmount, totalAmount } = calculateTotals()
-    const now = new Date()
+    const { subtotal, vatAmount, totalAmount } = calculateTotals();
+    const now = new Date();
 
     const receiptData: ReceiptData = {
       receiptId: `REC-${now.getTime().toString().slice(-8)}`, // Simple unique ID
-      date: now.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
-      time: now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }),
+      date: now.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      time: now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }),
       tin,
       businessName,
       businessAddress,
@@ -97,21 +138,25 @@ export default function ReceiptGeneratorPage() {
       ercaClb,
       orderNo: "1234567890",
       receiptNo: "1234567890",
-    }
+    };
 
-    setGeneratedReceipt(receiptData)
-  }
+    setGeneratedReceipt(receiptData);
+  };
 
-  const { subtotal, vatAmount, totalAmount } = calculateTotals()
+  const { subtotal, vatAmount, totalAmount } = calculateTotals();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8 lg:flex lg:space-y-0 lg:space-x-8">
+      <div className="max-w-7xl mx-auto space-y-8 flex flex-col lg:flex-row lg:space-y-0 lg:space-x-8">
         {/* Left Column: Input Form */}
-        <div className="flex-1 space-y-8">
+        <div className="flex-[3] space-y-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Receipt Generator</h1>
-            <p className="text-gray-600 text-lg">Create professional receipts with VAT calculation</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Receipt Generator
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Create professional receipts with VAT calculation
+            </p>
           </div>
 
           {/* <Card className="shadow-lg bg-white border-t-4 border-blue-600">
@@ -270,7 +315,9 @@ export default function ReceiptGeneratorPage() {
                     id="quantity"
                     type="number"
                     value={quantity}
-                    onChange={(e) => setQuantity(Number.parseInt(e.target.value) || 0)}
+                    onChange={(e) =>
+                      setQuantity(Number.parseInt(e.target.value) || 0)
+                    }
                     min="1"
                   />
                 </div>
@@ -280,7 +327,9 @@ export default function ReceiptGeneratorPage() {
                     id="price"
                     type="number"
                     value={price}
-                    onChange={(e) => setPrice(Number.parseFloat(e.target.value) || 0)}
+                    onChange={(e) =>
+                      setPrice(Number.parseFloat(e.target.value) || 0)
+                    }
                     min="0"
                     step="0.01"
                   />
@@ -302,7 +351,9 @@ export default function ReceiptGeneratorPage() {
                   <ReceiptText className="h-6 w-6 text-purple-600" />
                   Current Items
                 </CardTitle>
-                <CardDescription className="text-gray-600">Review the items added to your receipt.</CardDescription>
+                <CardDescription className="text-gray-600">
+                  Review the items added to your receipt.
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -319,13 +370,21 @@ export default function ReceiptGeneratorPage() {
                   <TableBody>
                     {items.map((item) => (
                       <TableRow key={item.id}>
-                        <TableCell className="font-medium">{item.productName}</TableCell>
+                        <TableCell className="font-medium">
+                          {item.productName}
+                        </TableCell>
                         <TableCell>{item.type}</TableCell>
                         <TableCell>{item.quantity}</TableCell>
                         <TableCell>ETB {item.price.toFixed(2)}</TableCell>
-                        <TableCell className="text-right">ETB {item.lineTotal.toFixed(2)}</TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="icon" onClick={() => handleRemoveItem(item.id)}>
+                          ETB {item.lineTotal.toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleRemoveItem(item.id)}
+                          >
                             <Trash2 className="h-4 w-4 text-red-500" />
                           </Button>
                         </TableCell>
@@ -343,7 +402,9 @@ export default function ReceiptGeneratorPage() {
                 <DollarSign className="h-6 w-6 text-orange-600" />
                 Receipt Summary
               </CardTitle>
-              <CardDescription className="text-gray-600">Final totals and generate receipt.</CardDescription>
+              <CardDescription className="text-gray-600">
+                Final totals and generate receipt.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2 text-lg font-medium">
@@ -373,12 +434,14 @@ export default function ReceiptGeneratorPage() {
         </div>
 
         {/* Right Column: Receipt Preview */}
-        <div className="flex-shrink-0 w-full lg:w-auto lg:min-w-[320px] flex justify-center items-start pt-16 mt-20 lg:pt-0">
+        <div className="flex-1 flex justify-center items-start pt-16 mt-20 lg:pt-0">
           {generatedReceipt ? (
             <ReceiptPreview receipt={generatedReceipt} />
           ) : (
             <Card className="w-[300px] p-8 text-center shadow-lg bg-white border-t-4 border-gray-300">
-              <CardTitle className="text-xl text-gray-700">Receipt Preview</CardTitle>
+              <CardTitle className="text-xl text-gray-700">
+                Receipt Preview
+              </CardTitle>
               <CardContent className="mt-4 text-gray-500">
                 <p>Your generated receipt will appear here.</p>
                 <p className="mt-2">Add items and click "Generate Receipt".</p>
@@ -388,5 +451,5 @@ export default function ReceiptGeneratorPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
