@@ -36,6 +36,10 @@ const mainItems = [
   { title: "Revenue", url: "/dashboard/revenue", icon: BarChart3 }, // Placeholder
 ]
 
+const requestmanagementItems = [
+  { title: "Tax Clearance Certificate Request Manager", icon: Clock }, // Placeholder
+  { title: "Refund Request Manager", icon: AlertCircle }, // Placeholder
+];
 const managementItems = [
   { title: "Pending Approvals", icon: Clock }, // Placeholder
   { title: "Expiring Soon",  icon: AlertCircle }, // Placeholder
@@ -57,7 +61,7 @@ export function AppSidebar() {
       return pathname === "/dashboard" || pathname.startsWith("/dashboard/")
     }
     return pathname.startsWith(path)
-  }
+  } 
 
   return (
     <Sidebar className="border-r border-border bg-background">
@@ -108,6 +112,31 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {managementItems.map(({ title, icon: Icon }) => {
+                const itemUrl = '/dashboard'; // Default or dynamic URL if needed
+                return (
+                  <SidebarMenuItem key={title}>
+                    <SidebarMenuButton asChild >
+                      <Link href={itemUrl}>
+                        <Icon />
+                        {!isCollapsed && <span>{title}</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        {/* Request Management */}
+        <SidebarGroup>
+          {!isCollapsed && (
+            <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Request Management
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {requestmanagementItems.map(({ title, icon: Icon }) => {
                 const itemUrl = '/dashboard'; // Default or dynamic URL if needed
                 return (
                   <SidebarMenuItem key={title}>

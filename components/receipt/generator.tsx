@@ -147,9 +147,9 @@ export default function ReceiptGeneratorPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8 flex flex-col lg:flex-row lg:space-y-0 lg:space-x-8">
+      <div className="max-w-7xl mx-auto space-y-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Left Column: Input Form */}
-        <div className="flex-[3] space-y-8">
+        <div className="lg:col-span-2 space-y-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
               Receipt Generator
@@ -434,7 +434,7 @@ export default function ReceiptGeneratorPage() {
         </div>
 
         {/* Right Column: Receipt Preview */}
-        <div className="flex-1 flex justify-center items-start pt-16 mt-20 lg:pt-0">
+        <div className="lg:col-span-2 flex justify-center items-start pt-16 mt-20 lg:pt-0">
           {generatedReceipt ? (
             <ReceiptPreview receipt={generatedReceipt} />
           ) : (
