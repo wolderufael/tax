@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { ReceiptData } from "@/lib/mock-data";
+import { decompressFromEncodedURIComponent } from "lz-string";
 
 function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
@@ -25,6 +26,40 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
         const data: ReceiptData = await res.json();
         if (!cancelled) setReceipt(data);
       } catch {
+        // Fallback 1: compressed data in URL (?c=...)
+        try {
+          const search =
+            typeof window !== "undefined" ? window.location.search : "";
+          const params = new URLSearchParams(search);
+          const compressed = params.get("c");
+          if (compressed) {
+            const json = decompressFromEncodedURIComponent(compressed);
+            if (json) {
+              const decoded = JSON.parse(json) as ReceiptData;
+              if (!cancelled) {
+                setReceipt(decoded);
+                return;
+              }
+            }
+          }
+        } catch {}
+
+        // Fallback 2: sessionStorage (same-device open)
+        try {
+          if (typeof window !== "undefined") {
+            const cached = window.sessionStorage.getItem(
+              `receipt:${receiptId}`
+            );
+            if (cached) {
+              const parsed = JSON.parse(cached) as ReceiptData;
+              if (!cancelled) {
+                setReceipt(parsed);
+                return;
+              }
+            }
+          }
+        } catch {}
+
         if (!cancelled) setReceipt(null);
       } finally {
         if (!cancelled) setLoading(false);

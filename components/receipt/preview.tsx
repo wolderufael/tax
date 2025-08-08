@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ReceiptData } from "@/lib/mock-data";
 import { Printer, Download, Share2 } from "lucide-react";
+import { compressToEncodedURIComponent } from "lz-string";
 
 interface ReceiptPreviewProps {
   receipt: ReceiptData;
@@ -16,19 +17,26 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
     if (shareUrl) return shareUrl;
     const id = String(receipt.receiptId);
     const origin = window.location.origin;
+    // Build compact, self-contained URL with compressed data
+    const compressed = compressToEncodedURIComponent(JSON.stringify(receipt));
+    const longUrl = `${origin}/receipt/${id}?c=${compressed}`;
     try {
-      await fetch("/api/receipts", {
+      const res = await fetch("/api/shorten", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, receipt }),
+        body: JSON.stringify({ url: longUrl }),
       });
-      const url = `${origin}/receipt/${id}`;
-      setShareUrl(url);
-      return url;
-    } catch (e) {
-      const fallback = `${origin}/receipt/${id}`;
-      setShareUrl(fallback);
-      return fallback;
+      const data = await res.json();
+      const shortUrl =
+        typeof data?.shortUrl === "string" ? data.shortUrl : longUrl;
+      try {
+        window.sessionStorage.setItem(`receipt:${id}`, JSON.stringify(receipt));
+      } catch {}
+      setShareUrl(shortUrl);
+      return shortUrl;
+    } catch {
+      setShareUrl(longUrl);
+      return longUrl;
     }
   };
 
