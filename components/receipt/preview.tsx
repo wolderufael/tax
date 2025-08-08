@@ -203,15 +203,15 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
 
   const handleDownload = async () => {
     const url = await ensureShareUrl();
-    // Create a new window for PDF generation
-    const pdfWindow = window.open("", "_blank", "width=400,height=600");
-    if (pdfWindow) {
-      pdfWindow.document.write(`
+    // Create a new window for Image (PNG) generation
+    const imgWindow = window.open("", "_blank", "width=400,height=600");
+    if (imgWindow) {
+      imgWindow.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
           <title>Receipt - ${receipt.businessName}</title>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
           <style>
             body { 
               font-family: monospace; 
@@ -340,26 +340,25 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
           </div>
 
           <script>
-            // Wait for the page to load, then generate PDF
+            // Wait for the page to load, then generate PNG
             window.onload = function() {
               const element = document.getElementById('receipt-content');
-              const opt = {
-                margin: 1,
-                filename: 'receipt-${receipt.receiptId}.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-              };
-              
-              html2pdf().set(opt).from(element).save().then(function() {
-                window.close();
+              html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
+                const dataURL = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = dataURL;
+                a.download = 'receipt-${receipt.receiptId}.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => window.close(), 500);
               });
             };
           </script>
         </body>
         </html>
       `);
-      pdfWindow.document.close();
+      imgWindow.document.close();
     }
   };
 
