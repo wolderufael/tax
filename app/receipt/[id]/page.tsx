@@ -1,11 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { ReceiptData } from "@/lib/mock-data";
 
 function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
-  const searchParams = useSearchParams();
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
   const [loading, setLoading] = useState(true);
   const [receiptId, setReceiptId] = useState<string>("");
@@ -18,17 +16,25 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
   }, [params]);
 
   useEffect(() => {
-    const dataParam = searchParams.get("data");
-    if (dataParam) {
+    if (!receiptId) return;
+    let cancelled = false;
+    const fetchData = async () => {
       try {
-        const receiptData = JSON.parse(decodeURIComponent(dataParam));
-        setReceipt(receiptData);
-      } catch (error) {
-        console.error("Error parsing receipt data:", error);
+        const res = await fetch(`/api/receipts/${receiptId}`);
+        if (!res.ok) throw new Error("Not found");
+        const data: ReceiptData = await res.json();
+        if (!cancelled) setReceipt(data);
+      } catch {
+        if (!cancelled) setReceipt(null);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-    }
-    setLoading(false);
-  }, [searchParams]);
+    };
+    fetchData();
+    return () => {
+      cancelled = true;
+    };
+  }, [receiptId]);
 
   if (loading) {
     return (
@@ -56,14 +62,8 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
     );
   }
 
-  const qrData = JSON.stringify({
-    license: receipt.tin,
-    owner: receipt.customerName,
-    business: receipt.businessName,
-    issued: receipt.date,
-    authority: "South Ethiopia Trade Bureau",
-    registration: receipt.invoiceReference,
-  });
+  // Use the current page URL as the QR data so it matches the share URL
+  const qrData = typeof window !== "undefined" ? window.location.href : "";
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
     qrData

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ReceiptData } from "@/lib/mock-data";
 import { Printer, Download, Share2 } from "lucide-react";
@@ -9,7 +10,35 @@ interface ReceiptPreviewProps {
 }
 
 export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
-  const openReceiptInNewTab = () => {
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+
+  const ensureShareUrl = async (): Promise<string> => {
+    if (shareUrl) return shareUrl;
+    const id = String(receipt.receiptId);
+    const origin = window.location.origin;
+    try {
+      await fetch("/api/receipts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, receipt }),
+      });
+      const url = `${origin}/receipt/${id}`;
+      setShareUrl(url);
+      return url;
+    } catch (e) {
+      const fallback = `${origin}/receipt/${id}`;
+      setShareUrl(fallback);
+      return fallback;
+    }
+  };
+
+  useEffect(() => {
+    // pre-create short URL when receipt changes
+    ensureShareUrl();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [receipt.receiptId]);
+
+  const openReceiptInNewTab = (url: string) => {
     // Create a new window with just the receipt
     const receiptWindow = window.open("", "_blank", "width=400,height=600");
     if (receiptWindow) {
@@ -134,14 +163,7 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
 
             <div class="qr-code">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
-                JSON.stringify({
-                  license: receipt.tin,
-                  owner: receipt.customerName,
-                  business: receipt.businessName,
-                  issued: receipt.date,
-                  authority: "South Ethiopia Trade Bureau",
-                  registration: receipt.invoiceReference,
-                })
+                url
               )}" alt="QR Code" style="width: 96px; height: 96px;" />
             </div>
 
@@ -160,8 +182,9 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
     return null;
   };
 
-  const handlePrint = () => {
-    const receiptWindow = openReceiptInNewTab();
+  const handlePrint = async () => {
+    const url = await ensureShareUrl();
+    const receiptWindow = openReceiptInNewTab(url);
     if (receiptWindow) {
       // Wait for the window to load, then print
       receiptWindow.onload = () => {
@@ -170,7 +193,8 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
     }
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
+    const url = await ensureShareUrl();
     // Create a new window for PDF generation
     const pdfWindow = window.open("", "_blank", "width=400,height=600");
     if (pdfWindow) {
@@ -296,14 +320,7 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
 
             <div class="qr-code">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
-                JSON.stringify({
-                  license: receipt.tin,
-                  owner: receipt.customerName,
-                  business: receipt.businessName,
-                  issued: receipt.date,
-                  authority: "South Ethiopia Trade Bureau",
-                  registration: receipt.invoiceReference,
-                })
+                url
               )}" alt="QR Code" style="width: 96px; height: 96px;" />
             </div>
 
@@ -339,41 +356,14 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
   };
 
   const handleShare = async () => {
-    // Generate a unique URL based on the base URL
-    const baseUrl = window.location.origin;
-    const uniqueReceiptUrl = `${baseUrl}/receipt/${
-      receipt.receiptId
-    }?data=${encodeURIComponent(
-      JSON.stringify({
-        businessName: receipt.businessName,
-        customerName: receipt.customerName,
-        totalAmount: receipt.totalAmount,
-        date: receipt.date,
-        receiptNo: receipt.receiptNo,
-        tin: receipt.tin,
-        businessAddress: receipt.businessAddress,
-        businessPhone: receipt.businessPhone,
-        items: receipt.items,
-        subtotal: receipt.subtotal,
-        vatRate: receipt.vatRate,
-        vatAmount: receipt.vatAmount,
-        time: receipt.time,
-        orderNo: receipt.orderNo,
-        invoiceReference: receipt.invoiceReference,
-        fsNo: receipt.fsNo,
-        preparedBy: receipt.preparedBy,
-        cashierName: receipt.cashierName,
-        ercaClb: receipt.ercaClb,
-      })
-    )}`;
-
+    const url = await ensureShareUrl();
     // Create share data
     const shareData = {
       title: `Receipt - ${receipt.businessName}`,
       text: `Receipt for ${
         receipt.customerName
       } - Total: ETB ${receipt.totalAmount.toFixed(2)}`,
-      url: uniqueReceiptUrl,
+      url,
     };
 
     try {
@@ -383,24 +373,18 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
       console.error("Error sharing:", error);
       // Fallback: copy the URL to clipboard
       try {
-        await navigator.clipboard.writeText(uniqueReceiptUrl);
+        await navigator.clipboard.writeText(url);
         alert("Receipt URL copied to clipboard!");
       } catch (clipboardError) {
         console.error("Error copying to clipboard:", clipboardError);
         // Final fallback: show the URL
-        alert(`Receipt URL: ${uniqueReceiptUrl}`);
+        alert(`Receipt URL: ${url}`);
       }
     }
   };
 
-  const qrData = JSON.stringify({
-    license: receipt.tin,
-    owner: receipt.customerName,
-    business: receipt.businessName,
-    issued: receipt.date,
-    authority: "South Ethiopia Trade Bureau",
-    registration: receipt.invoiceReference,
-  });
+  const qrData =
+    shareUrl ?? (typeof window !== "undefined" ? window.location.origin : "");
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
     qrData
