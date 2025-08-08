@@ -8,6 +8,7 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
   const [loading, setLoading] = useState(true);
   const [receiptId, setReceiptId] = useState<string>("");
+  const [shortUrl, setShortUrl] = useState<string | null>(null);
 
   useEffect(() => {
     // Handle async params in Next.js 15
@@ -71,6 +72,31 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
     };
   }, [receiptId]);
 
+  // Generate a shortened URL for the current page to use in the QR code
+  useEffect(() => {
+    const shorten = async () => {
+      try {
+        const href = typeof window !== "undefined" ? window.location.href : "";
+        if (!href) return;
+        const res = await fetch("/api/shorten", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: href }),
+        });
+        const data = await res.json();
+        if (typeof data?.shortUrl === "string") {
+          setShortUrl(data.shortUrl);
+        } else {
+          setShortUrl(href);
+        }
+      } catch {
+        const href = typeof window !== "undefined" ? window.location.href : "";
+        setShortUrl(href || null);
+      }
+    };
+    shorten();
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -97,8 +123,9 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
     );
   }
 
-  // Use the current page URL as the QR data so it matches the share URL
-  const qrData = typeof window !== "undefined" ? window.location.href : "";
+  // Use shortened URL for QR data; fallback to current href
+  const qrData =
+    shortUrl ?? (typeof window !== "undefined" ? window.location.href : "");
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
     qrData
