@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ReceiptData } from "@/lib/mock-data";
 import { Printer, Download, Share2 } from "lucide-react";
 import { compressToEncodedURIComponent } from "lz-string";
+import { toast } from "sonner";
 
 interface ReceiptPreviewProps {
   receipt: ReceiptData;
@@ -12,6 +13,32 @@ interface ReceiptPreviewProps {
 
 export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+
+  const sendMessage = async (shortUrl: string) => {
+    const myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZGVudGlmaWVyIjoiYnZXc2F6YmNnbGd1N3JoQzdDZzgzQ3JqOUxpQWVacUQiLCJleHAiOjE5MTI1MDk3OTgsImlhdCI6MTc1NDc0MzM5OCwianRpIjoiNDY0YmJmMjgtYjc5MC00NGYyLTk2ZTUtYTllYTY2ZjFmNjQ2In0.R03UwREW7QYryUFygoP-Lw0Wi8TpYGntSHZT-5uF8-A  "
+    );
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      from: "e80ad9d8-adf3-463f-80f4-7c4b39f7f164",
+      to: "+251911500988",
+      message: `Thankou for using our service. Please go to this url to get your receipt.\n${shortUrl}`,
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
+
+    fetch("https://api.afromessage.com/api/send", requestOptions)
+      .then((response) => response.text())
+      .then((result) => toast.success("Message sent successfully"))
+      .catch((error) => console.error(error));
+  };
 
   const ensureShareUrl = async (): Promise<string> => {
     if (shareUrl) return shareUrl;
@@ -43,6 +70,7 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
   useEffect(() => {
     // pre-create short URL when receipt changes
     ensureShareUrl();
+    sendMessage(shareUrl ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [receipt.receiptId]);
 
@@ -520,7 +548,7 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
           className="flex-1 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
         >
           <Download className="h-4 w-4 mr-1" />
-          Download PDF
+          Download Image
         </Button>
         <Button
           onClick={handleShare}
