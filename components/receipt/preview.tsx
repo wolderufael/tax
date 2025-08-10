@@ -37,7 +37,14 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
     fetch("https://api.afromessage.com/api/send", requestOptions)
       .then((response) => response.text())
       .then((result) => toast.success("Message sent successfully"))
-      .catch((error) => console.error(error));
+      .catch((error: any) =>
+        toast.error("Message sending failed", {
+          description: error.message,
+        })
+       
+      );
+
+      
   };
 
   const ensureShareUrl = async (): Promise<string> => {
