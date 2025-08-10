@@ -25,7 +25,7 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
     const raw = JSON.stringify({
       from: "e80ad9d8-adf3-463f-80f4-7c4b39f7f164",
       to: "+251911500988",
-      message: `Thankou for using our service. Please go to this url to get your receipt.\n${shortUrl}`,
+      message: `Thank you for using our service. Please go to this url to get your receipt.\n${shortUrl}`,
     });
 
     const requestOptions = {
