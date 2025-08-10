@@ -7,6 +7,7 @@ import { Printer, Download, Share2 } from "lucide-react";
 import { compressToEncodedURIComponent } from "lz-string";
 import { toast } from "sonner";
 
+
 interface ReceiptPreviewProps {
   receipt: ReceiptData;
 }
@@ -32,6 +33,7 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
       method: "POST",
       headers: myHeaders,
       body: raw,
+      redirect: "follow" as const,
     };
 
     fetch("https://api.afromessage.com/api/send", requestOptions)
