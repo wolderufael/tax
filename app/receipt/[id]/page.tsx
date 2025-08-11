@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { ReceiptData } from "@/lib/mock-data";
 import { decompressFromEncodedURIComponent } from "lz-string";
+import { Download, Printer } from "lucide-react";
 
 function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
@@ -131,6 +132,166 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
     qrData
   )}`;
 
+  const handleDownload = async () => {
+    if (!receipt) return;
+
+    const url = qrData;
+    // Create a new window for Image (PNG) generation
+    const imgWindow = window.open("", "_blank", "width=400,height=600");
+    if (imgWindow) {
+      imgWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Receipt - ${receipt.businessName}</title>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+          <style>
+            body { 
+              font-family: monospace; 
+              font-size: 12px; 
+              margin: 20px; 
+              background: white;
+              color: black;
+            }
+            .receipt { 
+              width: 300px; 
+              margin: 0 auto; 
+              background: white; 
+              padding: 20px;
+              border: 1px solid #ccc;
+            }
+            .header { text-align: center; margin-bottom: 20px; }
+            .border-dashed { border-top: 1px dashed #ccc; border-bottom: 1px dashed #ccc; padding: 10px 0; margin: 10px 0; }
+            .flex-between { display: flex; justify-content: space-between; }
+            .text-center { text-align: center; }
+            .font-bold { font-weight: bold; }
+            .qr-code { text-align: center; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div id="receipt-content" class="receipt">
+            <div class="header">
+              <p>TIN: ${receipt.tin}</p>
+              <p class="font-bold">${
+                receipt.customerName || receipt.businessName
+              }</p>
+              <p>${receipt.businessName}</p>
+              <p>${receipt.businessAddress}</p>
+              <p>${receipt.businessPhone}</p>
+            </div>
+
+            <div class="flex-between border-dashed">
+              <span>${receipt.date.split(",")}</span>
+              <span>${receipt.time}</span>
+            </div>
+
+            <div class="border-dashed">
+              <div>To: ${receipt.customerName}</div>
+              <div>Order No.: ${receipt.orderNo}</div>
+              <div>Receipt No.: ${receipt.receiptNo}</div>
+            </div>
+
+            <div>
+              ${
+                receipt.invoiceReference
+                  ? `<p>Reference: ${receipt.invoiceReference}</p>`
+                  : ""
+              }
+              ${receipt.fsNo ? `<p>FS No. ${receipt.fsNo}</p>` : ""}
+              ${
+                receipt.preparedBy
+                  ? `<p>Prepared by: ${receipt.preparedBy}</p>`
+                  : ""
+              }
+              ${receipt.cashierName ? `<p>To: ${receipt.cashierName}</p>` : ""}
+            </div>
+
+            <div class="flex-between border-dashed">
+              <span>Description</span>
+              <span>QTY Price</span>
+              <span>Amount</span>
+            </div>
+
+            ${receipt.items
+              .map(
+                (item) => `
+              <div class="flex-between">
+                <span style="flex: 1;">${item.productName}</span>
+                <span style="width: 25%; text-align: right;">
+                  ${item.quantity.toFixed(3)} x ${item.price.toFixed(2)}
+                </span>
+                <span style="width: 25%; text-align: right;">
+                  *${item.lineTotal.toFixed(2)}
+                </span>
+              </div>
+            `
+              )
+              .join("")}
+
+            <div class="border-dashed" style="padding-top: 10px;">
+              <div class="flex-between">
+                <span>SUBTOTAL</span>
+                <span class="font-bold">ETB ${receipt.subtotal.toFixed(
+                  2
+                )}</span>
+              </div>
+              <div class="flex-between">
+                <span>VAT ${receipt.vatRate * 100}%</span>
+                <span class="font-bold">ETB ${receipt.vatAmount.toFixed(
+                  2
+                )}</span>
+              </div>
+              <div class="flex-between font-bold" style="border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 10px;">
+                <span>TOTAL</span>
+                <span>ETB ${receipt.totalAmount.toFixed(2)}</span>
+              </div>
+            </div>
+
+            <div class="flex-between">
+              <span>CASH</span>
+              <span>ETB ${receipt.totalAmount.toFixed(2)}</span>
+            </div>
+            <div class="flex-between">
+              <span>ITEM#</span>
+              <span>${receipt.items.length}</span>
+            </div>
+
+            <div class="qr-code">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
+                url
+              )}" alt="QR Code" style="width: 96px; height: 96px;" />
+            </div>
+
+            <div class="text-center" style="border-top: 1px dashed #ccc; padding-top: 20px;">
+              <p class="font-bold">Powered By SRE</p>
+              ${receipt.ercaClb ? `<p>${receipt.ercaClb}</p>` : ""}
+              <p style="margin-top: 20px; font-size: 10px;">Thank you for your business!</p>
+            </div>
+          </div>
+
+          <script>
+            // Wait for the page to load, then generate PNG
+            window.onload = function() {
+              const element = document.getElementById('receipt-content');
+              html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
+                const dataURL = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = dataURL;
+                a.download = 'receipt-${receipt.receiptId}.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => window.close(), 500);
+              });
+            };
+          </script>
+        </body>
+        </html>
+      `);
+      imgWindow.document.close();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-md mx-auto">
@@ -239,13 +400,21 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
           </div>
         </div>
 
-        {/* Print Button */}
-        <div className="mt-6 text-center">
+        {/* Action Buttons */}
+        <div className="mt-6 flex gap-3 justify-center print:hidden">
           <button
             onClick={() => window.print()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
           >
+            <Printer className="h-4 w-4" />
             Print Receipt
+          </button>
+          <button
+            onClick={handleDownload}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+          >
+            <Download className="h-4 w-4" />
+            Download Image
           </button>
         </div>
       </div>
