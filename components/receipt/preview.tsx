@@ -6,7 +6,7 @@ import { ReceiptData } from "@/lib/mock-data";
 import { Printer, Download, Share2 } from "lucide-react";
 import { compressToEncodedURIComponent } from "lz-string";
 import { toast } from "sonner";
-
+import axios from "axios";
 
 interface ReceiptPreviewProps {
   receipt: ReceiptData;
@@ -16,46 +16,51 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
   const sendMessage = async (shortUrl: string) => {
-    const myHeaders = new Headers();
-    myHeaders.append(
-      "Authorization",
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZGVudGlmaWVyIjoiYnZXc2F6YmNnbGd1N3JoQzdDZzgzQ3JqOUxpQWVacUQiLCJleHAiOjE5MTI1MDk3OTgsImlhdCI6MTc1NDc0MzM5OCwianRpIjoiNDY0YmJmMjgtYjc5MC00NGYyLTk2ZTUtYTllYTY2ZjFmNjQ2In0.R03UwREW7QYryUFygoP-Lw0Wi8TpYGntSHZT-5uF8-A  "
-    );
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      from: "e80ad9d8-adf3-463f-80f4-7c4b39f7f164",
-      to: "+251911500988",
-      message: `Thank you for using our service. Please go to this url to get your receipt.\n${shortUrl}`,
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow" as const,
-    };
-
-    fetch("https://api.afromessage.com/api/send", requestOptions)
-      .then((response) => response.text())
-      .then((result) => toast.success("Message sent successfully"))
-      .catch((error: any) =>
-        toast.error("Message sending failed", {
-          description: error.message,
-        })
-       
+    if (!shortUrl) return;
+    try {
+      await axios.post(
+        "http://api.afromessage.com/api/send",
+        {
+          from: "e80ad9d8-adf3-463f-80f4-7c4b39f7f164",
+          to: "+251911500988",
+          message: `Thank you for using our service. Please go to this url to get your receipt.\n${shortUrl}`,
+        },
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZGVudGlmaWVyIjoiYnZXc2F6YmNnbGd1N3JoQzdDZzgzQ3JqOUxpQWVacUQiLCJleHAiOjE5MTI1MDk3OTgsImlhdCI6MTc1NDc0MzM5OCwianRpIjoiNDY0YmJmMjgtYjc5MC00NGYyLTk2ZTUtYTllYTY2ZjFmNjQ2In0.R03UwREW7QYryUFygoP-Lw0Wi8TpYGntSHZT-5uF8-A  ",
+            "Content-Type": "application/json",
+          },
+        }
       );
-
-      
+      toast.success("Message sent successfully");
+    } catch (error: any) {
+      toast.error("Message sending failed", {
+        description: error?.message || String(error),
+      });
+    }
   };
 
   const ensureShareUrl = async (): Promise<string> => {
     if (shareUrl) return shareUrl;
     const id = String(receipt.receiptId);
     const origin = window.location.origin;
+
+    // First, save the receipt to the server-side store
+    try {
+      await fetch("/api/receipts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, receipt }),
+      });
+    } catch (error) {
+      console.warn("Failed to save receipt to server store:", error);
+    }
+
     // Build compact, self-contained URL with compressed data
     const compressed = compressToEncodedURIComponent(JSON.stringify(receipt));
     const longUrl = `${origin}/receipt/${id}?c=${compressed}`;
+
     try {
       const res = await fetch("/api/shorten", {
         method: "POST",
@@ -77,9 +82,8 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
   };
 
   useEffect(() => {
-    // pre-create short URL when receipt changes
-    ensureShareUrl();
-    sendMessage(shareUrl ?? "");
+    // pre-create short URL when receipt changes, then send SMS
+    ensureShareUrl().then((url) => sendMessage(url));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [receipt.receiptId]);
 
@@ -228,6 +232,7 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
   };
 
   const handlePrint = async () => {
+    // Ensure receipt is saved to server and URL is generated
     const url = await ensureShareUrl();
     const receiptWindow = openReceiptInNewTab(url);
     if (receiptWindow) {
@@ -427,9 +432,18 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
     }
   };
 
-  const qrData =
-    shareUrl ?? (typeof window !== "undefined" ? window.location.origin : "");
+  // Use shareUrl if available, otherwise create a fallback URL with compressed data
+  const getFinalQrUrl = () => {
+    if (shareUrl) return shareUrl;
 
+    // Fallback: Create URL with compressed data
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const id = String(receipt.receiptId);
+    const compressed = compressToEncodedURIComponent(JSON.stringify(receipt));
+    return `${origin}/receipt/${id}?c=${compressed}`;
+  };
+
+  const qrData = getFinalQrUrl();
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
     qrData
   )}`;
