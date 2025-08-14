@@ -434,6 +434,8 @@ export interface ReceiptData {
   vatAmount: number
   totalAmount: number
   customerName?: string
+  customerTin?: string
+  customerPhone?: string
   ercaClb?: string
   orderNo?: string
   receiptNo?: string
@@ -466,6 +468,8 @@ export const mockReceiptData: ReceiptData = {
   vatAmount: 74.35, // 15% of 495.66
   totalAmount: 570.01, // Subtotal + VAT
   customerName: "EYOB TESFAYE",
+  customerTin: "0090638794",
+  customerPhone: "0911234567",
   ercaClb: "CLB00008701",
   orderNo: "1234567890",
   receiptNo: "1234567890",

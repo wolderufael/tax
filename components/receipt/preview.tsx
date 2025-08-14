@@ -18,21 +18,14 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
   const sendMessage = async (shortUrl: string) => {
     if (!shortUrl) return;
     try {
-      await axios.post(
-        "http://api.afromessage.com/api/send",
-        {
+      await axios.get("/api/sms", {
+        params: {
           from: "e80ad9d8-adf3-463f-80f4-7c4b39f7f164",
-          to: "+251911500988",
+          to: "+251986906289",
           message: `Thank you for using our service. Please go to this url to get your receipt.\n${shortUrl}`,
         },
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZGVudGlmaWVyIjoiYnZXc2F6YmNnbGd1N3JoQzdDZzgzQ3JqOUxpQWVacUQiLCJleHAiOjE5MTI1MDk3OTgsImlhdCI6MTc1NDc0MzM5OCwianRpIjoiNDY0YmJmMjgtYjc5MC00NGYyLTk2ZTUtYTllYTY2ZjFmNjQ2In0.R03UwREW7QYryUFygoP-Lw0Wi8TpYGntSHZT-5uF8-A  ",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      });
+
       toast.success("Message sent successfully");
     } catch (error: any) {
       toast.error("Message sending failed", {
@@ -299,6 +292,8 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
 
             <div class="border-dashed">
               <div>To: ${receipt.customerName}</div>
+              <div>Customer TIN: ${receipt.customerTin}</div>
+              <div>Customer Phone: ${receipt.customerPhone}</div>
               <div>Order No.: ${receipt.orderNo}</div>
               <div>Receipt No.: ${receipt.receiptNo}</div>
             </div>
@@ -471,6 +466,16 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
           <div className="mb-1">
             <span>To: {receipt.customerName}</span>
           </div>
+          {receipt.customerTin && (
+            <div className="mb-1">
+              <span>Customer TIN: {receipt.customerTin}</span>
+            </div>
+          )}
+          {receipt.customerPhone && (
+            <div className="mb-1">
+              <span>Customer Phone: {receipt.customerPhone}</span>
+            </div>
+          )}
           <div className="mb-1">
             <span>Order No.: {receipt.orderNo}</span>
           </div>

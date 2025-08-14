@@ -187,6 +187,8 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
 
             <div class="border-dashed">
               <div>To: ${receipt.customerName}</div>
+              <div>Customer TIN: ${receipt.customerTin}</div>
+              <div>Customer Phone: ${receipt.customerPhone}</div>
               <div>Order No.: ${receipt.orderNo}</div>
               <div>Receipt No.: ${receipt.receiptNo}</div>
             </div>
@@ -315,6 +317,12 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
           <div className="border-t border-b border-dashed border-gray-400 py-2 mb-4">
             <div className="mb-1">
               <span>To: {receipt.customerName}</span>
+            </div>
+            <div className="mb-1">
+              <span>Customer TIN: {receipt.customerTin}</span>
+            </div>
+            <div className="mb-1">
+              <span>Customer Phone: {receipt.customerPhone}</span>
             </div>
             <div className="mb-1">
               <span>Order No.: {receipt.orderNo}</span>

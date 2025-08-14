@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import {
   Card,
   CardContent,
@@ -54,6 +54,8 @@ export default function ReceiptGeneratorPage() {
   );
   const [businessPhone, setBusinessPhone] = useState("0116478100/0911360005");
   const [customerName, setCustomerName] = useState("Jhon Doe");
+  const [customerTin, setCustomerTin] = useState("123456789");
+  const [customerPhone, setCustomerPhone] = useState("0912345678");
   const [cashierName, setCashierName] = useState("Hirut G");
   const [waiterName, setWaiterName] = useState("konjit");
   const [fsNo, setFsNo] = useState("00075906");
@@ -135,6 +137,8 @@ export default function ReceiptGeneratorPage() {
       vatAmount,
       totalAmount,
       customerName,
+      customerTin,
+      customerPhone,
       ercaClb,
       orderNo: "1234567890",
       receiptNo: "1234567890",
@@ -335,6 +339,26 @@ export default function ReceiptGeneratorPage() {
                   />
                 </div>
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="customerTin">Customer TIN</Label>
+                  <Input
+                    id="customerTin"
+                    value={customerTin}
+                    onChange={(e) => setCustomerTin(e.target.value)}
+                    placeholder="Customer TIN"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="customerPhone">Customer Phone</Label>
+                  <Input
+                    id="customerPhone"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    placeholder="Customer Phone"
+                  />
+                </div>
+              </div>
               <Button
                 onClick={handleAddItem}
                 className="w-full bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
@@ -436,7 +460,9 @@ export default function ReceiptGeneratorPage() {
         {/* Right Column: Receipt Preview */}
         <div className="lg:col-span-2 flex justify-center items-start pt-16 mt-20 lg:pt-0">
           {generatedReceipt ? (
-            <ReceiptPreview receipt={generatedReceipt} />
+            <Suspense fallback={<div>Loading...</div>}>
+              <ReceiptPreview receipt={generatedReceipt} />
+            </Suspense>
           ) : (
             <Card className="w-[300px] p-8 text-center shadow-lg bg-white border-t-4 border-gray-300">
               <CardTitle className="text-xl text-gray-700">
