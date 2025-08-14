@@ -53,9 +53,9 @@ export default function ReceiptGeneratorPage() {
     "R/AS/C BOLE W.09 H.NO NEW AROUND GORO SEFERA"
   );
   const [businessPhone, setBusinessPhone] = useState("0116478100/0911360005");
-  const [customerName, setCustomerName] = useState("Jhon Doe");
-  const [customerTin, setCustomerTin] = useState("123456789");
-  const [customerPhone, setCustomerPhone] = useState("0912345678");
+  const [customerName, setCustomerName] = useState("");
+  const [customerTin, setCustomerTin] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
   const [cashierName, setCashierName] = useState("Hirut G");
   const [waiterName, setWaiterName] = useState("konjit");
   const [fsNo, setFsNo] = useState("00075906");
@@ -67,6 +67,7 @@ export default function ReceiptGeneratorPage() {
   const [generatedReceipt, setGeneratedReceipt] = useState<ReceiptData | null>(
     null
   );
+  const [customerPhoneError, setCustomerPhoneError] = useState(false);
 
   const VAT_RATE = 0.15; // 15% VAT
 
@@ -101,9 +102,24 @@ export default function ReceiptGeneratorPage() {
     return { subtotal, vatAmount, totalAmount };
   };
 
+  const handleCustomerPhoneChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setCustomerPhone(e.target.value);
+    if (customerPhoneError) {
+      setCustomerPhoneError(false);
+    }
+  };
+
   const handleGenerateReceipt = () => {
     if (items.length === 0) {
       alert("Please add at least one item to generate a receipt.");
+      return;
+    }
+
+    if (!customerPhone.trim()) {
+      setCustomerPhoneError(true);
+      alert("Customer phone is mandatory. Please enter a valid phone number.");
       return;
     }
 
@@ -276,6 +292,61 @@ export default function ReceiptGeneratorPage() {
             </CardContent>
           </Card> */}
 
+          <Card className="shadow-lg bg-white border-t-4 border-blue-600">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-blue-800 flex items-center gap-2">
+                <ClipboardList className="h-6 w-6 text-blue-600" />
+                Customer Details
+              </CardTitle>
+              <CardDescription className="text-gray-600">
+                Enter customer information to build your receipt.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="customerName">Customer Name</Label>
+                  <Input
+                    id="customerName"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    placeholder="e.g., John Doe"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="customerTin">Customer TIN</Label>
+                  <Input
+                    id="customerTin"
+                    value={customerTin}
+                    onChange={(e) => setCustomerTin(e.target.value)}
+                    placeholder="e.g., 0123456789"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="customerPhone">
+                    Customer Phone{" "}
+                    <span className="text-xs text-red-500">*</span>
+                  </Label>
+
+                  <Input
+                    id="customerPhone"
+                    value={customerPhone}
+                    onChange={handleCustomerPhoneChange}
+                    placeholder="e.g., 0912345678"
+                    className={
+                      customerPhoneError
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : ""
+                    }
+                  />
+                  {customerPhoneError && (
+                    <p className="text-xs text-red-500">Required</p>
+                  )}
+                </div>
+              </div>
+
+            </CardContent>
+          </Card>
           <Card className="shadow-lg bg-white border-t-4 border-green-600">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-green-800 flex items-center gap-2">
@@ -339,26 +410,7 @@ export default function ReceiptGeneratorPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="customerTin">Customer TIN</Label>
-                  <Input
-                    id="customerTin"
-                    value={customerTin}
-                    onChange={(e) => setCustomerTin(e.target.value)}
-                    placeholder="Customer TIN"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="customerPhone">Customer Phone</Label>
-                  <Input
-                    id="customerPhone"
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    placeholder="Customer Phone"
-                  />
-                </div>
-              </div>
+
               <Button
                 onClick={handleAddItem}
                 className="w-full bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"

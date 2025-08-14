@@ -278,7 +278,7 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
             <div class="header">
               <p>TIN: ${receipt.tin}</p>
               <p class="font-bold">${
-                receipt.customerName || receipt.businessName
+                receipt.businessName
               }</p>
               <p>${receipt.businessName}</p>
               <p>${receipt.businessAddress}</p>
@@ -451,9 +451,9 @@ export default function ReceiptPreview({ receipt }: ReceiptPreviewProps) {
         <div className="text-center mb-4">
           <p className="text-sm mb-1">TIN: {receipt.tin}</p>
           <p className="text-sm font-bold mb-1">
-            {receipt.customerName || receipt.businessName}
+            {receipt.businessName}
           </p>
-          <p className="mb-1">{receipt.businessName}</p>
+         {/*  <p className="mb-1">{receipt.businessName}</p> */}
           <p className="mb-1">{receipt.businessAddress}</p>
           <p className="mb-1">{receipt.businessPhone}</p>
         </div>

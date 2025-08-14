@@ -303,9 +303,9 @@ function ReceiptContent({ params }: { params: Promise<{ id: string }> }) {
           <div className="text-center mb-4">
             <p className="text-sm mb-1">TIN: {receipt.tin}</p>
             <p className="text-sm font-bold mb-1">
-              {receipt.customerName || receipt.businessName}
+              {receipt.businessName}
             </p>
-            <p className="mb-1">{receipt.businessName}</p>
+            {/* <p className="mb-1">{receipt.businessName}</p> */}
             <p className="mb-1">{receipt.businessAddress}</p>
             <p className="mb-1">{receipt.businessPhone}</p>
           </div>
