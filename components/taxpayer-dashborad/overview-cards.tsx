@@ -28,6 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import StatsCard from "@/components/taxpayer-dashborad/StatsCard";
+import { useLanguage } from "@/components/LanguageProvider";
 
 // Mock data for taxpayer - Enhanced and appealing
 const statsData = [
@@ -85,42 +86,62 @@ const recentActivities = [
   {
     id: 1,
     type: "VAT Return Filed Successfully",
+    type_am: "የቫት መመዝገቢያ በተሳካ ሁኔታ ተሰጥቷል",
     user: "July 2024 Monthly VAT Return - ETB 45,200",
+    user_am: "ጁላይ 2024 ወርሃዊ ቫት መመዝገቢያ - 45,200 ብር",
     time: "2 hours ago",
+    time_am: "2 ሰዓታት በፊት",
     status: "completed",
     amount: "ETB 4,520",
+    amount_am: "4,520 ብር",
   },
   {
     id: 2,
-    type: "PAYE Payment Processed",
+    type: "Payment Processed",
+    type_am: "ክፍያ ተከናውኗል",
     user: "Employee Tax Payment - 15 Employees",
+    user_am: "የሰራተኞች ታክስ ክፍያ - 15 ሰራተኞች",
     time: "1 day ago",
+    time_am: "1 ቀን በፊት",
     status: "completed",
     amount: "ETB 12,850",
+    amount_am: "12,850 ብር",
   },
   {
     id: 3,
     type: "Tax Clearance Certificate",
+    type_am: "የታክስ ነጻነት ሰርተፍኬት",
     user: "Export License Clearance Request",
+    user_am: "የስደተኛ ፈቃድ ነጻነት ጥያቄ",
     time: "3 days ago",
+    time_am: "3 ቀናት በፊት",
     status: "pending",
     amount: "Processing",
+    amount_am: "በሂደት ላይ",
   },
   {
     id: 4,
     type: "Business License Renewal",
+    type_am: "የንግድ ፈቃድ ዳግም ማስረከቢያ",
     user: "Annual Premium License Renewal",
+    user_am: "ዓመታዊ ፕሪሚየም ፈቃድ ዳግም ማስረከቢያ",
     time: "5 days ago",
+    time_am: "5 ቀናት በፊት",
     status: "pending",
     amount: "ETB 2,500",
+    amount_am: "2,500 ብር",
   },
   {
     id: 5,
     type: "Income Tax Assessment",
+    type_am: "የገቢ ታክስ ግምገማ",
     user: "Q2 2024 Tax Assessment Completed",
+    user_am: "የ2024 ሩብ 2 ታክስ ግምገማ ተጠናቋል",
     time: "1 week ago",
+    time_am: "1 ሳምንት በፊት",
     status: "completed",
     amount: "ETB 8,750",
+    amount_am: "8,750 ብር",
   },
 ];
 
@@ -128,42 +149,151 @@ const upcomingTasks = [
   {
     id: 1,
     task: "August VAT Return Filing",
+    task_am: "ኦገስት ወር የቫት መመዝገቢያ",
     type: "Monthly Declaration",
+    type_am: "ወርሃዊ መግለጫ",
     dueDate: "Aug 15, 2024",
+    dueDate_am: "15 ኦገስት 2024",
     priority: "high",
     amount: "Est. ETB 4,800",
+    amount_am: "ተገመተው 4,800 ብር",
     daysLeft: 3,
   },
   {
     id: 2,
     task: "Employee PAYE Payment",
+    task_am: "የሰራተኞች PAYE ክፍያ",
     type: "Payroll Tax",
+    type_am: "የደመወዝ ታክስ",
     dueDate: "Aug 20, 2024",
+    dueDate_am: "20 ኦገስት 2024",
     priority: "high",
     amount: "ETB 13,200",
+    amount_am: "13,200 ብር",
     daysLeft: 8,
   },
   {
     id: 3,
     task: "Premium License Renewal",
+    task_am: "ፕሪሚየም ፈቃድ ዳግም ማስረከቢያ",
     type: "Business License",
+    type_am: "የንግድ ፈቃድ",
     dueDate: "Sep 1, 2024",
+    dueDate_am: "1 ሴፕቴምበር 2024",
     priority: "medium",
     amount: "ETB 2,500",
+    amount_am: "2,500 ብር",
     daysLeft: 20,
   },
   {
     id: 4,
     task: "Annual Income Tax Return",
+    task_am: "ዓመታዊ የገቢ ታክስ መመዝገቢያ",
     type: "Yearly Declaration",
+    type_am: "ዓመታዊ መግለጫ",
     dueDate: "Dec 31, 2024",
+    dueDate_am: "31 ዲሴምበር 2024",
     priority: "low",
     amount: "Est. ETB 25,000",
+    amount_am: "ተገመተው 25,000 ብር",
     daysLeft: 150,
   },
 ];
 
+const translations = {
+  en: {
+    dashboard: "My Tax Dashboard",
+    welcome:
+      "Welcome back! Here's an overview of your tax account and recent activities.",
+    refresh: "Refresh Data",
+    stats: [
+      "Tax Identification Number",
+      "Active Certificates",
+      "Business License",
+      "Compliance Score",
+      "Account Balance",
+      "Monthly Tax Savings",
+    ],
+    subtitles: [
+      "Verified & Active",
+      "All Valid",
+      "Expires: Dec 2024",
+      "Excellent Standing",
+      "Credit Balance",
+      "vs Last Month",
+    ],
+    recentActivities: "My Recent Activities",
+    upcomingTasks: "Upcoming Tax Obligations",
+    viewAll: "View All",
+    task: "Task",
+    dueDate: "Due Date",
+    amount: "Amount",
+    priority: "Priority",
+    completed: "Completed",
+    pending: "Pending",
+    rejected: "Rejected",
+    high: "High",
+    medium: "Medium",
+    low: "Low",
+    quickActions: "Quick Actions",
+    fileTaxReturn: "File Tax Return",
+    submitDeclarations: "Submit declarations",
+    makePayment: "Make Payment",
+    payTaxes: "Pay taxes online",
+    getCertificate: "Get Certificate",
+    downloadClearance: "Download clearance",
+    viewReports: "View Reports",
+    taxAnalytics: "Tax analytics",
+  },
+  am: {
+    dashboard: "የኔ የታክስ ዳሽቦርድ",
+    welcome: "እንኳን ደህና መጡ! ይህ የታክስ መለያዎ እና የቅርብ ጊዜ እንቅስቃሴዎች አጠቃላይ እይታ ነው።",
+    refresh: "ዳታ አድስ",
+    stats: [
+      "የታክስ መለያ ቁጥር",
+      "ንቁ ሰርተፍኬቶች",
+      "የንግድ ፈቃድ",
+      "የተግባር አጠቃላይ ውጤት",
+      "የመለያ ሂሳብ",
+      "ወርሃዊ የታክስ ቅናሽ",
+    ],
+    subtitles: [
+      "ተረጋጋ እና ንቁ",
+      "ሁሉም ትክክል",
+      "የሚያበቃው: ዲሴም 2024",
+      "አሪፍ ሁኔታ",
+      "የተቀረ ብድር",
+      "ከባለፈው ወር ጋር",
+    ],
+    recentActivities: "የኔ የቅርብ ጊዜ እንቅስቃሴዎች",
+    upcomingTasks: "የሚመጡ የታክስ ግዴታዎች",
+    viewAll: "ሁሉንም ይመልከቱ",
+    task: "ተግባር",
+    dueDate: "የሚያበቃው ቀን",
+    amount: "መጠን",
+    priority: "ቅድሚያ",
+    completed: "ተጠናቋል",
+    pending: "በመጠባበቅ ላይ",
+    rejected: "ተቀባይነት አልተሰጠም",
+    high: "ከፍተኛ",
+    medium: "መካከለኛ",
+    low: "ዝቅተኛ",
+    quickActions: "ፈጣን እርምጃዎች",
+    fileTaxReturn: "የታክስ መመዝገቢያ ያስገቡ",
+    submitDeclarations: "መግለጫዎችን ያስገቡ",
+    makePayment: "ክፍያ ያድርጉ",
+    payTaxes: "ታክስ በመስመር ላይ ይክፈሉ",
+    getCertificate: "ሰርተፍኬት ያግኙ",
+    downloadClearance: "የንግድ ፈቃድ ያውርዱ",
+    viewReports: "ሪፖርቶችን ይመልከቱ",
+    taxAnalytics: "የታክስ ትንታኔዎች",
+  },
+};
+
 export const DashboardOverview = () => {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "completed":
@@ -172,7 +302,7 @@ export const DashboardOverview = () => {
             variant="secondary"
             className="bg-green-400  text-success border-success/20"
           >
-            Completed
+            {t.completed}
           </Badge>
         );
       case "pending":
@@ -181,7 +311,7 @@ export const DashboardOverview = () => {
             variant="secondary"
             className="bg-blue-50 text-warning border-warning/20"
           >
-            Pending
+            {t.pending}
           </Badge>
         );
       case "rejected":
@@ -190,7 +320,7 @@ export const DashboardOverview = () => {
             variant="secondary"
             className="bg-destructive/10 text-destructive border-destructive/20"
           >
-            Rejected
+            {t.rejected}
           </Badge>
         );
       default:
@@ -201,18 +331,18 @@ export const DashboardOverview = () => {
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case "high":
-        return <Badge variant="destructive">High</Badge>;
+        return <Badge variant="destructive">{t.high}</Badge>;
       case "medium":
         return (
           <Badge
             variant="secondary"
             className="bg-blue-50 text-warning border-warning/20"
           >
-            Medium
+            {t.medium}
           </Badge>
         );
       case "low":
-        return <Badge variant="secondary">Low</Badge>;
+        return <Badge variant="secondary">{t.low}</Badge>;
       default:
         return <Badge variant="secondary">{priority}</Badge>;
     }
@@ -223,17 +353,12 @@ export const DashboardOverview = () => {
       {/* Welcome Section */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            My Tax Dashboard
-          </h1>
-          <p className="text-muted-foreground">
-            Welcome back! Here's an overview of your tax account and recent
-            activities.
-          </p>
+          <h1 className="text-3xl font-bold text-foreground">{t.dashboard}</h1>
+          <p className="text-muted-foreground">{t.welcome}</p>
         </div>
         <Button className="bg-primary hover:bg-primary-hover">
           <RefreshCw className="w-4 h-4 mr-2" />
-          Refresh Data
+          {t.refresh}
         </Button>
       </div>
 
@@ -242,12 +367,12 @@ export const DashboardOverview = () => {
         {statsData.map((stat, index) => (
           <StatsCard
             key={index}
-            title={stat.title}
+            title={t.stats[index]}
             value={stat.value}
             icon={stat.icon}
             trend={stat.trend}
             variant={stat.variant}
-            subtitle={stat.subtitle}
+            subtitle={t.subtitles[index]}
           />
         ))}
       </div>
@@ -258,7 +383,7 @@ export const DashboardOverview = () => {
         <Card className="shadow-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-xl font-semibold">
-              My Recent Activities
+              {t.recentActivities}
             </CardTitle>
             <Button variant="ghost" size="sm">
               <MoreHorizontal className="h-4 w-4" />
@@ -281,19 +406,21 @@ export const DashboardOverview = () => {
                     )}
                   </div>
                   <div>
-                    <p className="font-medium text-sm">{activity.type}</p>
+                    <p className="font-medium text-sm">
+                      {language === "am" ? activity.type_am : activity.type}
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      {activity.user}
+                      {language === "am" ? activity.user_am : activity.user}
                     </p>
                     <p className="text-xs font-medium text-primary">
-                      {activity.amount}
+                      {language === "am" ? activity.amount_am : activity.amount}
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-col items-end space-y-1">
                   {getStatusBadge(activity.status)}
                   <span className="text-xs text-muted-foreground">
-                    {activity.time}
+                    {language === "am" ? activity.time_am : activity.time}
                   </span>
                 </div>
               </div>
@@ -305,20 +432,20 @@ export const DashboardOverview = () => {
         <Card className="shadow-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-xl font-semibold">
-              Upcoming Tax Obligations
+              {t.upcomingTasks}
             </CardTitle>
             <Button variant="ghost" size="sm">
-              View All
+              {t.viewAll}
             </Button>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Task</TableHead>
-                  <TableHead>Due Date</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Priority</TableHead>
+                  <TableHead>{t.task}</TableHead>
+                  <TableHead>{t.dueDate}</TableHead>
+                  <TableHead>{t.amount}</TableHead>
+                  <TableHead>{t.priority}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -326,22 +453,27 @@ export const DashboardOverview = () => {
                   <TableRow key={task.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium">{task.task}</p>
+                        <p className="font-medium">
+                          {language === "am" ? task.task_am : task.task}
+                        </p>
                         <p className="text-xs text-muted-foreground">
-                          {task.type}
+                          {language === "am" ? task.type_am : task.type}
                         </p>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="text-sm font-medium">{task.dueDate}</p>
+                        <p className="text-sm font-medium">
+                          {language === "am" ? task.dueDate_am : task.dueDate}
+                        </p>
                         <p className="text-xs text-muted-foreground">
-                          {task.daysLeft} days left
+                          {task.daysLeft}{" "}
+                          {language === "am" ? "ቀናት ቀርበዋል" : "days left"}
                         </p>
                       </div>
                     </TableCell>
                     <TableCell className="text-sm font-medium text-primary">
-                      {task.amount}
+                      {language === "am" ? task.amount_am : task.amount}
                     </TableCell>
                     <TableCell>{getPriorityBadge(task.priority)}</TableCell>
                   </TableRow>
@@ -355,7 +487,9 @@ export const DashboardOverview = () => {
       {/* Quick Actions */}
       <Card className="shadow-card">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">Quick Actions</CardTitle>
+          <CardTitle className="text-xl font-semibold">
+            {t.quickActions}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-4">
@@ -365,9 +499,9 @@ export const DashboardOverview = () => {
             >
               <FileText className="h-8 w-8 text-primary" />
               <div className="text-center">
-                <span className="text-sm font-medium">File Tax Return</span>
+                <span className="text-sm font-medium">{t.fileTaxReturn}</span>
                 <p className="text-xs text-muted-foreground">
-                  Submit declarations
+                  {t.submitDeclarations}
                 </p>
               </div>
             </Button>
@@ -377,10 +511,8 @@ export const DashboardOverview = () => {
             >
               <CreditCard className="h-8 w-8 text-green-600" />
               <div className="text-center">
-                <span className="text-sm font-medium">Make Payment</span>
-                <p className="text-xs text-muted-foreground">
-                  Pay taxes online
-                </p>
+                <span className="text-sm font-medium">{t.makePayment}</span>
+                <p className="text-xs text-muted-foreground">{t.payTaxes}</p>
               </div>
             </Button>
             <Button
@@ -389,9 +521,9 @@ export const DashboardOverview = () => {
             >
               <Award className="h-8 w-8 text-blue-600" />
               <div className="text-center">
-                <span className="text-sm font-medium">Get Certificate</span>
+                <span className="text-sm font-medium">{t.getCertificate}</span>
                 <p className="text-xs text-muted-foreground">
-                  Download clearance
+                  {t.downloadClearance}
                 </p>
               </div>
             </Button>
@@ -401,8 +533,10 @@ export const DashboardOverview = () => {
             >
               <TrendingUp className="h-8 w-8 text-purple-600" />
               <div className="text-center">
-                <span className="text-sm font-medium">View Reports</span>
-                <p className="text-xs text-muted-foreground">Tax analytics</p>
+                <span className="text-sm font-medium">{t.viewReports}</span>
+                <p className="text-xs text-muted-foreground">
+                  {t.taxAnalytics}
+                </p>
               </div>
             </Button>
           </div>

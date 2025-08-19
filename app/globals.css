@@ -112,11 +112,23 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+/* app/globals.css */
+.google-translate-container .goog-te-combo {
+  border: 1px solid #ccc;
+  padding: 5px;
+  font-family: var(--font-geist-sans);
+  background-color: #fff;
+  color: #333;
+  border-radius: 4px;
+}
+.google-translate-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 50;
+}
+
+
+.skiptranslate {
+    display: none !important;
 }
