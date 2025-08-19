@@ -148,7 +148,7 @@ export const DashboardHeader = () => {
                 <DropdownMenuItem
                   className="text-destructive"
                   onClick={() => {
-                    window.location.href = "/login";
+                    window.location.href = "/";
                   }}
                 >
                   <span>{t.logout}</span>
